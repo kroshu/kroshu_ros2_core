@@ -39,7 +39,7 @@ install(TARGETS kroshu_ros2_core
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     INCLUDES DESTINATION include)
-   
+
 ament_export_include_directories(include)
 
 if(BUILD_TESTING)
