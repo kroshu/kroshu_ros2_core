@@ -16,57 +16,37 @@
 #define KROSHU_ROS2_CORE__PARAMETER_HPP_
 
 #include <string>
-#include <functional>
 
-#include "rclcpp/rclcpp.hpp"
-#include "lifecycle_msgs/msg/state.hpp"
+#include "kroshu_ros2_core/ParameterBase.hpp"
 
 namespace kroshu_ros2_core
 {
 
-struct ParameterSetAccessRights
-{
-  bool unconfigured;
-  bool inactive;
-  bool active;
-  bool finalized;
-  bool isSetAllowed(std::uint8_t current_state) const
-  {
-    switch (current_state) {
-      case lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED:
-        return unconfigured;
-      case lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE:
-        return inactive;
-      case lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE:
-        return active;
-      case lifecycle_msgs::msg::State::PRIMARY_STATE_FINALIZED:
-        return finalized;
-      default:
-        return false;
-    }
-  }
-};
-
-class Parameter
+template<typename T>
+class Parameter : public ParameterBase
 {
 public:
   Parameter(
-    const std::string & name, const rclcpp::ParameterValue & value,
-    const rclcpp::ParameterType & type, const ParameterSetAccessRights & rights,
-    const std::function<bool(const kroshu_ros2_core::Parameter &)> & on_change_callback);
-  const std::string & getName() const;
-  const rclcpp::ParameterValue & getValue() const;
-  const rclcpp::ParameterType getType() const;
-  const ParameterSetAccessRights & getRights() const;
-  const std::function<bool(const kroshu_ros2_core::Parameter &)> & getCallback() const;
-  bool setValue(const rclcpp::ParameterValue &);
+    rclcpp_lifecycle::LifecycleNode::SharedPtr node,
+    const std::string & name, const T & value, const ParameterSetAccessRights & rights,
+    std::function<bool(const kroshu_ros2_core::Parameter<T> &)> on_change_callback)
+  : ParameterBase(node, name, rights), on_change_callback_(on_change_callback)
+  {
+    node_->declare_parameter(name, value);
+  }
+
+  bool getValue(T & place_holder) const
+  {
+    return node_->get_parameter(name_, place_holder);
+  }
+
+  bool callCallback()
+  {
+    return on_change_callback_(*this);
+  }
 
 private:
-  const std::string name_;
-  rclcpp::ParameterValue value_;
-  const rclcpp::ParameterType type_;
-  const ParameterSetAccessRights rights_;
-  const std::function<bool(const kroshu_ros2_core::Parameter &)> on_change_callback_;
+  const std::function<bool(const kroshu_ros2_core::Parameter<T> &)> on_change_callback_;
 };
 
 }  // namespace kroshu_ros2_core

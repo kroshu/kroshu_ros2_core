@@ -21,7 +21,6 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 
 add_library(kroshu_ros2_core SHARED
-  src/Parameter.cpp
   src/ROS2BaseNode.cpp)
 ament_target_dependencies(kroshu_ros2_core rclcpp rclcpp_lifecycle lifecycle_msgs)
 

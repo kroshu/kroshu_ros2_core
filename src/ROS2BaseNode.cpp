@@ -14,6 +14,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "kroshu_ros2_core/ROS2BaseNode.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
@@ -46,7 +47,7 @@ ROS2BaseNode::on_cleanup(const rclcpp_lifecycle::State & state)
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 ROS2BaseNode::on_shutdown(const rclcpp_lifecycle::State & state)
 {
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn result = SUCCESS;
+  auto result = SUCCESS;
   switch (state.id()) {
     case lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE:
       result = this->on_deactivate(get_current_state());
@@ -85,32 +86,6 @@ ROS2BaseNode::on_error(const rclcpp_lifecycle::State & state)
   return SUCCESS;
 }
 
-const rclcpp::ParameterValue getValueHelper(const rclcpp::Parameter & param)
-{
-  switch (param.get_type()) {
-    case rclcpp::ParameterType::PARAMETER_BOOL:
-      return rclcpp::ParameterValue(param.as_bool());
-    case rclcpp::ParameterType::PARAMETER_INTEGER:
-      return rclcpp::ParameterValue(param.as_int());
-    case rclcpp::ParameterType::PARAMETER_DOUBLE:
-      return rclcpp::ParameterValue(param.as_double());
-    case rclcpp::ParameterType::PARAMETER_STRING:
-      return rclcpp::ParameterValue(param.as_string());
-    case rclcpp::ParameterType::PARAMETER_BYTE_ARRAY:
-      return rclcpp::ParameterValue(param.as_byte_array());
-    case rclcpp::ParameterType::PARAMETER_BOOL_ARRAY:
-      return rclcpp::ParameterValue(param.as_bool_array());
-    case rclcpp::ParameterType::PARAMETER_INTEGER_ARRAY:
-      return rclcpp::ParameterValue(param.as_integer_array());
-    case rclcpp::ParameterType::PARAMETER_DOUBLE_ARRAY:
-      return rclcpp::ParameterValue(param.as_double_array());
-    case rclcpp::ParameterType::PARAMETER_STRING_ARRAY:
-      return rclcpp::ParameterValue(param.as_string_array());
-    default:
-      return rclcpp::ParameterValue();
-  }
-}
-
 rcl_interfaces::msg::SetParametersResult ROS2BaseNode::onParamChange(
   const std::vector<rclcpp::Parameter> & parameters)
 {
@@ -121,21 +96,18 @@ rcl_interfaces::msg::SetParametersResult ROS2BaseNode::onParamChange(
     if (found_param_it == params_.end()) {
       RCLCPP_ERROR(this->get_logger(), "Invalid parameter name %s",
         param.get_name().c_str());
-    } else if (param.get_type() != found_param_it->second.getType()) {
-      RCLCPP_ERROR(this->get_logger(), "Invalid parameter type for parameter %s",
-        param.get_name().c_str());
-    } else {
-      result.successful = setParameter(found_param_it->second, getValueHelper(param));
+    } else if (canSetParameter(found_param_it->second)) {
+      result.successful = found_param_it->second->callCallback();
     }
   }
   return result;
 }
 
-bool ROS2BaseNode::canSetParameter(const kroshu_ros2_core::Parameter & param)
+bool ROS2BaseNode::canSetParameter(std::shared_ptr<kroshu_ros2_core::ParameterBase> param)
 {
   try {
-    if (!param.getRights().isSetAllowed(this->get_current_state().id())) {
-      RCLCPP_ERROR(this->get_logger(), "Parameter " + param.getName() +
+    if (!param->getRights().isSetAllowed(this->get_current_state().id())) {
+      RCLCPP_ERROR(this->get_logger(), "Parameter " + param->getName() +
         " cannot be changed while in state %s",
         this->get_current_state().label().c_str());
       return false;
@@ -143,41 +115,10 @@ bool ROS2BaseNode::canSetParameter(const kroshu_ros2_core::Parameter & param)
   } catch (const std::out_of_range & e) {
     RCLCPP_ERROR(this->get_logger(),
       "Parameter set access rights for parameter %s couldn't be determined",
-      param.getName().c_str());
+      param->getName().c_str());
     return false;
   }
   return true;
-}
-
-bool ROS2BaseNode::setParameter(
-  kroshu_ros2_core::Parameter & param,
-  const rclcpp::ParameterValue & value)
-{
-  if (!canSetParameter(param)) {
-    return false;
-  }
-
-  param.setValue(value);
-  auto return_success = param.getCallback()(param);
-  return return_success;
-}
-
-void ROS2BaseNode::declareParameter(
-  const std::string & name, const rclcpp::ParameterValue & value,
-  const rclcpp::ParameterType & type, const ParameterSetAccessRights & rights,
-  const std::function<bool(const kroshu_ros2_core::Parameter &)> & on_change_callback)
-{
-  auto found_iter = params_.find(name);
-  if (found_iter != params_.end()) {
-    RCLCPP_ERROR(this->get_logger(),
-      "Parameter %s already declared",
-      name.c_str());
-  } else {
-    kroshu_ros2_core::Parameter new_param(name, value, type,
-      rights, on_change_callback);
-    params_.emplace(name, new_param);
-    this->declare_parameter(name, value);
-  }
 }
 
 }  // namespace kroshu_ros2_core

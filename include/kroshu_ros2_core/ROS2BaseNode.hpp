@@ -18,11 +18,13 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <memory>
 
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
 
 #include "kroshu_ros2_core/Parameter.hpp"
+#include "kroshu_ros2_core/ParameterBase.hpp"
 
 namespace kroshu_ros2_core
 {
@@ -54,17 +56,33 @@ public:
 protected:
   rcl_interfaces::msg::SetParametersResult onParamChange(
     const std::vector<rclcpp::Parameter> & parameters);
-  bool canSetParameter(const kroshu_ros2_core::Parameter & param);
-  bool setParameter(kroshu_ros2_core::Parameter & param, const rclcpp::ParameterValue & value);
-  std::map<std::string, kroshu_ros2_core::Parameter> params_;
+
+  template<typename T>
+  void declareParameter(
+    const std::string & name, const T & value,
+    const ParameterSetAccessRights & rights,
+    std::function<bool(const kroshu_ros2_core::Parameter<T> &)> on_change_callback)
+  {
+    auto found_iter = params_.find(name);
+    if (found_iter != params_.end()) {
+      RCLCPP_ERROR(this->get_logger(),
+        "Parameter %s already declared",
+        name.c_str());
+    } else {
+      auto param_shared_ptr = std::make_shared<kroshu_ros2_core::Parameter<T>>(
+        rclcpp_lifecycle::LifecycleNode::SharedPtr(this), name, value,
+        rights, on_change_callback);
+      params_.emplace(name, param_shared_ptr);
+    }
+  }
+
+  bool canSetParameter(std::shared_ptr<kroshu_ros2_core::ParameterBase> param);
+
+  std::map<std::string, std::shared_ptr<kroshu_ros2_core::ParameterBase>> params_;
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn SUCCESS =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn ERROR =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
-  void declareParameter(
-    const std::string & name, const rclcpp::ParameterValue & value,
-    const rclcpp::ParameterType & type, const ParameterSetAccessRights & rights,
-    const std::function<bool(const kroshu_ros2_core::Parameter &)> & on_change_callback);
 };
 
 }  // namespace kroshu_ros2_core
