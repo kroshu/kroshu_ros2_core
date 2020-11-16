@@ -68,7 +68,7 @@ public:
     return rights_;
   }
 
-  virtual bool callCallback() {return false;}
+  virtual bool callCallback(const rclcpp::Parameter & new_param) {return false;}
 
 protected:
   rclcpp_lifecycle::LifecycleNode::SharedPtr node_;

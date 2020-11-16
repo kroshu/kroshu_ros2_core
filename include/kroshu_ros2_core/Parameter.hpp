@@ -17,6 +17,8 @@
 
 #include <string>
 
+#include "rclcpp/rclcpp.hpp"
+#include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "kroshu_ros2_core/ParameterBase.hpp"
 
 namespace kroshu_ros2_core
@@ -29,7 +31,7 @@ public:
   Parameter(
     rclcpp_lifecycle::LifecycleNode::SharedPtr node,
     const std::string & name, const T & value, const ParameterSetAccessRights & rights,
-    std::function<bool(const kroshu_ros2_core::Parameter<T> &)> on_change_callback)
+    std::function<bool(const T &)> on_change_callback)
   : ParameterBase(node, name, rights), on_change_callback_(on_change_callback)
   {
     node_->declare_parameter(name, value);
@@ -40,13 +42,13 @@ public:
     return node_->get_parameter(name_, place_holder);
   }
 
-  bool callCallback()
+  bool callCallback(const rclcpp::Parameter & new_param)
   {
-    return on_change_callback_(*this);
+    return on_change_callback_(new_param.get_value<T>());
   }
 
 private:
-  const std::function<bool(const kroshu_ros2_core::Parameter<T> &)> on_change_callback_;
+  const std::function<bool(const T &)> on_change_callback_;
 };
 
 }  // namespace kroshu_ros2_core

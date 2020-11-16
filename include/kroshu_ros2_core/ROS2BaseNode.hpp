@@ -61,11 +61,12 @@ protected:
   void declareParameter(
     const std::string & name, const T & value,
     const ParameterSetAccessRights & rights,
-    std::function<bool(const kroshu_ros2_core::Parameter<T> &)> on_change_callback)
+    std::function<bool(const T &)> on_change_callback)
   {
     auto found_iter = params_.find(name);
     if (found_iter != params_.end()) {
-      RCLCPP_ERROR(this->get_logger(),
+      RCLCPP_ERROR(
+        this->get_logger(),
         "Parameter %s already declared",
         name.c_str());
     } else {
