@@ -29,17 +29,34 @@ class Parameter : public ParameterBase
 {
 public:
   Parameter(
-    rclcpp_lifecycle::LifecycleNode::SharedPtr node,
     const std::string & name, const T & value, const ParameterSetAccessRights & rights,
-    std::function<bool(const T &)> on_change_callback)
-  : ParameterBase(node, name, rights), on_change_callback_(on_change_callback)
+    std::function<bool(const T &)> on_change_callback,
+    std::function<void(const std::string &, const T &)> declare_func,
+    std::function<bool(const std::string &, T &)> get_param_func,
+    std::function<
+      bool(const rclcpp::Parameter &)>
+    set_param_func)
+  : ParameterBase(name, rights), on_change_callback_(on_change_callback),
+    get_param_func_(get_param_func), set_param_func_(set_param_func)
   {
-    node_->declare_parameter(name, value);
+    declare_func(name_, value);
   }
 
-  bool getValue(T & place_holder) const
+  ~Parameter()
   {
-    return node_->get_parameter(name_, place_holder);
+    std::cout << "Destructor of " << name_ << std::endl;
+  }
+
+  bool getValue(
+    T & place_holder) const
+  {
+    return get_param_func_(name_, place_holder);
+  }
+
+  bool setValue(const T & new_value) const
+  {
+    rclcpp::Parameter new_param(name_, new_value);
+    return set_param_func_(new_param);
   }
 
   bool callCallback(const rclcpp::Parameter & new_param)
@@ -49,6 +66,9 @@ public:
 
 private:
   const std::function<bool(const T &)> on_change_callback_;
+  const std::function<bool(const std::string &, T &)> get_param_func_;
+  const std::function<bool(
+      const rclcpp::Parameter &)> set_param_func_;
 };
 
 }  // namespace kroshu_ros2_core

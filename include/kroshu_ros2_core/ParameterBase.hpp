@@ -17,6 +17,7 @@
 
 #include <string>
 #include <functional>
+#include <iostream>
 
 #include "rclcpp/rclcpp.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
@@ -52,10 +53,15 @@ class ParameterBase
 {
 public:
   ParameterBase(
-    rclcpp_lifecycle::LifecycleNode::SharedPtr node,
     const std::string & name, const ParameterSetAccessRights & rights)
-  : node_(node), name_(name), rights_(rights)
+  : name_(name), rights_(rights)
   {
+    std::cout << "Base constructor of " << name_ << std::endl;
+  }
+
+  virtual ~ParameterBase()
+  {
+    std::cout << "Base destructor of " << name_ << std::endl;
   }
 
   const std::string & getName() const
@@ -71,7 +77,6 @@ public:
   virtual bool callCallback(const rclcpp::Parameter & new_param) {return false;}
 
 protected:
-  rclcpp_lifecycle::LifecycleNode::SharedPtr node_;
   const std::string name_;
 
 private:

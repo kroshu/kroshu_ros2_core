@@ -95,23 +95,28 @@ rcl_interfaces::msg::SetParametersResult ROS2BaseNode::onParamChange(
     auto found_param_it = params_.find(param.get_name());
     if (found_param_it == params_.end()) {
       RCLCPP_ERROR(this->get_logger(), "Invalid parameter name");
-    }
-    else if (canSetParameter(found_param_it->second)) {
+    } else if (canSetParameter(*(found_param_it->second))) {
       result.successful = found_param_it->second->callCallback(param);
     }
   }
   return result;
 }
 
-bool ROS2BaseNode::canSetParameter(std::shared_ptr<kroshu_ros2_core::ParameterBase> param)
+bool ROS2BaseNode::canSetParameter(const kroshu_ros2_core::ParameterBase & param)
 {
   try {
-    if (!param->getRights().isSetAllowed(this->get_current_state().id())) {
-      RCLCPP_ERROR(this->get_logger(), "Parameter " + param->getName() + " cannot be changed while in state %s", this->get_current_state().label().c_str());
+    if (!param.getRights().isSetAllowed(this->get_current_state().id())) {
+      RCLCPP_ERROR(
+        this->get_logger(),
+        "Parameter " + param.getName() +
+        " cannot be changed while in state %s",
+        this->get_current_state().label().c_str());
       return false;
     }
   } catch (const std::out_of_range & e) {
-    RCLCPP_ERROR(this->get_logger(), "Parameter set access rights for parameter %s couldn't be determined");
+    RCLCPP_ERROR(
+      this->get_logger(),
+      "Parameter set access rights for parameter %s couldn't be determined");
     return false;
   }
   return true;

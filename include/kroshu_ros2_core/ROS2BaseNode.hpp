@@ -70,14 +70,31 @@ protected:
         "Parameter %s already declared",
         name.c_str());
     } else {
+      auto declare_param_lambda = [this](const std::string & param_name,
+          const T & param_value) {
+          this->declare_parameter(param_name, param_value);
+        };
+
+      auto get_param_lambda = [this](const std::string & param_name, T & place_holder) {
+          return this->get_parameter(param_name, place_holder);
+        };
+
+      auto set_param_lambda = [this](const rclcpp::Parameter & new_param) {
+          auto result = this->set_parameter(new_param);
+          return result.successful;
+        };
+
       auto param_shared_ptr = std::make_shared<kroshu_ros2_core::Parameter<T>>(
-        rclcpp_lifecycle::LifecycleNode::SharedPtr(this), name, value,
-        rights, on_change_callback);
+        name, value,
+        rights, on_change_callback,
+        declare_param_lambda,
+        get_param_lambda,
+        set_param_lambda);
       params_.emplace(name, param_shared_ptr);
     }
   }
 
-  bool canSetParameter(std::shared_ptr<kroshu_ros2_core::ParameterBase> param);
+  bool canSetParameter(const kroshu_ros2_core::ParameterBase & param);
 
   std::map<std::string, std::shared_ptr<kroshu_ros2_core::ParameterBase>> params_;
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn SUCCESS =
