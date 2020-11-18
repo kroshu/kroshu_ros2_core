@@ -92,17 +92,21 @@ rcl_interfaces::msg::SetParametersResult ROS2BaseNode::onParamChange(
   rcl_interfaces::msg::SetParametersResult result;
   result.successful = false;
   for (const rclcpp::Parameter & param : parameters) {
-    auto found_param_it = params_.find(param.get_name());
+    auto found_param_it = std::find_if(
+      params_.begin(), params_.end(),
+      [&param](auto param_ptr) {
+        return param_ptr->getName() == param.get_name();
+      });
     if (found_param_it == params_.end()) {
       RCLCPP_ERROR(this->get_logger(), "Invalid parameter name");
-    } else if (canSetParameter(*(found_param_it->second))) {
-      result.successful = found_param_it->second->callCallback(param);
+    } else if (canSetParameter(*(*found_param_it))) {
+      result.successful = (*found_param_it)->callCallback(param);
     }
   }
   return result;
 }
 
-bool ROS2BaseNode::canSetParameter(const kroshu_ros2_core::ParameterBase & param)
+bool ROS2BaseNode::canSetParameter(const ParameterBase & param)
 {
   try {
     if (!param.getRights().isSetAllowed(this->get_current_state().id())) {
@@ -120,6 +124,11 @@ bool ROS2BaseNode::canSetParameter(const kroshu_ros2_core::ParameterBase & param
     return false;
   }
   return true;
+}
+
+void ROS2BaseNode::registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr)
+{
+  params_.emplace_back(param_shared_ptr);
 }
 
 }  // namespace kroshu_ros2_core
