@@ -81,12 +81,10 @@ public:
       const std::string & name, const ParameterSetAccessRights & rights)
     : name_(name), rights_(rights)
     {
-      std::cout << "Base constructor of " << name_ << std::endl;
     }
 
     virtual ~ParameterBase()
     {
-      std::cout << "Base destructor of " << name_ << std::endl;
     }
 
     const std::string & getName() const
@@ -124,7 +122,6 @@ public:
 
     ~Parameter()
     {
-      std::cout << "Destructor of " << name_ << std::endl;
     }
 
     bool getValue(
