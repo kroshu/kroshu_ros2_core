@@ -30,25 +30,25 @@ class ROS2BaseNode : public rclcpp_lifecycle::LifecycleNode
 {
 public:
   explicit ROS2BaseNode(const std::string & node_name);
-  virtual ~ROS2BaseNode();
+  ~ROS2BaseNode() override;
 
-  virtual rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_configure(const rclcpp_lifecycle::State & state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_configure(const rclcpp_lifecycle::State & state) override;
 
-  virtual rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_cleanup(const rclcpp_lifecycle::State & state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_cleanup(const rclcpp_lifecycle::State & state) override;
 
-  virtual rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_shutdown(const rclcpp_lifecycle::State & state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_shutdown(const rclcpp_lifecycle::State & state) override;
 
-  virtual rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_activate(const rclcpp_lifecycle::State & state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_activate(const rclcpp_lifecycle::State & state) override;
 
-  virtual rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_deactivate(const rclcpp_lifecycle::State & state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_deactivate(const rclcpp_lifecycle::State & state) override;
 
-  virtual rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_error(const rclcpp_lifecycle::State & state);
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_error(const rclcpp_lifecycle::State & state) override;
 
 protected:
   struct ParameterSetAccessRights
@@ -83,9 +83,7 @@ public:
     {
     }
 
-    virtual ~ParameterBase()
-    {
-    }
+    virtual ~ParameterBase() = default;
 
     const std::string & getName() const
     {
@@ -120,9 +118,7 @@ public:
       node_.declare_parameter(name_, value);
     }
 
-    ~Parameter()
-    {
-    }
+    ~Parameter() override = default;
 
     bool getValue(
       T & place_holder) const
@@ -136,7 +132,7 @@ public:
       return node_.set_parameter(new_param).successful;
     }
 
-    bool callCallback(const rclcpp::Parameter & new_param)
+    bool callCallback(const rclcpp::Parameter & new_param) override
     {
       return on_change_callback_(new_param.get_value<T>());
     }
@@ -151,11 +147,13 @@ private:
   bool canSetParameter(const ParameterBase & param);
   void registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr);
 
-  std::vector<std::shared_ptr<ParameterBase>> params_;
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn SUCCESS =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn ERROR =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
+
+private:
+  std::vector<std::shared_ptr<ParameterBase>> params_;
 };
 
 }  // namespace kroshu_ros2_core
