@@ -24,7 +24,7 @@ add_library(kroshu_ros2_core SHARED
   src/ROS2BaseNode.cpp)
 ament_target_dependencies(kroshu_ros2_core rclcpp rclcpp_lifecycle lifecycle_msgs)
 
-ament_export_targets(export_kroshu_ros2_core HAS_LIBRARY_TARGET)
+ament_export_interfaces(export_kroshu_ros2_core HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp rclcpp_lifecycle lifecycle_msgs)
 ament_export_libraries(${PROJECT_NAME})
 
