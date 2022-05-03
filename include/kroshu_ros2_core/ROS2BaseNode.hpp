@@ -96,10 +96,16 @@ public:
       return rights_;
     }
 
+    const rclcpp::ParameterValue & getDefaultValue() const
+    {
+      return default_value_;
+    }
+
     virtual bool callCallback(const rclcpp::Parameter &) {return false;}
 
 protected:
     const std::string name_;
+    rclcpp::ParameterValue default_value_;
 
 private:
     const ParameterSetAccessRights rights_;
@@ -116,7 +122,7 @@ public:
     : ParameterBase(name, rights), on_change_callback_(on_change_callback),
       node_(node)
     {
-      node_.declare_parameter(name_, value);
+    	default_value_ = rclcpp::ParameterValue(value);
     }
 
     ~Parameter() override = default;

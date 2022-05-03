@@ -134,6 +134,7 @@ bool ROS2BaseNode::canSetParameter(const ParameterBase & param)
 void ROS2BaseNode::registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr)
 {
   params_.emplace_back(param_shared_ptr);
+  this->declare_parameter(param_shared_ptr->getName(), param_shared_ptr->getDefaultValue());
 }
 
 }  // namespace kroshu_ros2_core
