@@ -117,12 +117,12 @@ private:
 public:
     Parameter(
       const std::string & name, const T & value, const ParameterSetAccessRights & rights,
-      std::function<bool(rclcpp::Parameter)> on_change_callback,
+      std::function<bool(const T &)> on_change_callback,
       ROS2BaseNode & node)
     : ParameterBase(name, rights), on_change_callback_(on_change_callback),
       node_(node)
     {
-    	default_value_ = rclcpp::ParameterValue(value);
+      default_value_ = rclcpp::ParameterValue(value);
     }
 
     ~Parameter() override = default;
@@ -141,11 +141,16 @@ public:
 
     bool callCallback(const rclcpp::Parameter & new_param) override
     {
-      return on_change_callback_(new_param);
+      try {
+    	  return on_change_callback_(new_param.get_value<T>());
+      } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
+        RCLCPP_ERROR(node_.get_logger(), e.what());
+        return false;
+      }
     }
 
 private:
-    const std::function<bool(rclcpp::Parameter)> on_change_callback_;
+    const std::function<bool(const T &)> on_change_callback_;
     ROS2BaseNode & node_;
   };
 
