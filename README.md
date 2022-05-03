@@ -14,3 +14,32 @@ One can use the class by deriving from it.
 Parameters have to be created individually in a shared_ptr form with the correspondent arguments: name, default value,
 a ParameterAccessRights structure defining in which states is the setting of the Parameter allowed, the callback to call on setting the Parameter and the node itself.
 Lastly they have to be added to the base node with its registerParameter function.
+
+Example code for an integer parameter (onRateChangeRequest() returns a boolean):
+```C++
+
+  param_callback_ = this->add_on_set_parameters_callback(
+    [this](const std::vector<rclcpp::Parameter> & parameters) {
+      return this->onParamChange(parameters);
+    });  // global of type rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
+    
+  std::shared_ptr<Parameter<int>> rate = std::make_shared<Parameter<int>>(
+    "rate", 2,
+    ParameterSetAccessRights {true, true, false, false}, [this](int rate) {
+      return this->onRateChangeRequest(rate);
+    }, *this);
+  registerParameter(rate);
+```
+
+The add_on_set_parameters_callback() should be called before the parameter declaration, otherwise the initial values of the parameters will not be synced from the parameter server.
+
+The template argument of the Parameter class should be one of the following (others result in a compile error):
+ - bool
+ - int64_t (or type satisfying std::is_integral except bool)
+ - double (or type satisfying std::is_floating_point)
+ - std::string
+ - std::vector\<uint8_t\>
+ - std::vector\<bool\>
+ - std::vector\<int64_t\>
+ - std::vector\<double\>
+ - std::vector\<std::string\>
