@@ -30,25 +30,26 @@ class ROS2BaseNode : public rclcpp_lifecycle::LifecycleNode
 {
 public:
   explicit ROS2BaseNode(const std::string & node_name);
+  explicit ROS2BaseNode(const std::string & node_name, const rclcpp::NodeOptions & options);
   ~ROS2BaseNode() override;
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_configure(const rclcpp_lifecycle::State & state) override;
+  on_configure(const rclcpp_lifecycle::State &) override;
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_cleanup(const rclcpp_lifecycle::State & state) override;
+  on_cleanup(const rclcpp_lifecycle::State &) override;
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_shutdown(const rclcpp_lifecycle::State & state) override;
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_activate(const rclcpp_lifecycle::State & state) override;
+  on_activate(const rclcpp_lifecycle::State &) override;
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_deactivate(const rclcpp_lifecycle::State & state) override;
+  on_deactivate(const rclcpp_lifecycle::State &) override;
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_error(const rclcpp_lifecycle::State & state) override;
+  on_error(const rclcpp_lifecycle::State &) override;
 
 protected:
   struct ParameterSetAccessRights
@@ -95,10 +96,16 @@ public:
       return rights_;
     }
 
-    virtual bool callCallback(const rclcpp::Parameter & new_param) {return false;}
+    const rclcpp::ParameterValue & getDefaultValue() const
+    {
+      return default_value_;
+    }
+
+    virtual bool callCallback(const rclcpp::Parameter &) {return false;}
 
 protected:
     const std::string name_;
+    rclcpp::ParameterValue default_value_;
 
 private:
     const ParameterSetAccessRights rights_;
@@ -115,7 +122,7 @@ public:
     : ParameterBase(name, rights), on_change_callback_(on_change_callback),
       node_(node)
     {
-      node_.declare_parameter(name_, value);
+      default_value_ = rclcpp::ParameterValue(value);
     }
 
     ~Parameter() override = default;
@@ -134,7 +141,12 @@ public:
 
     bool callCallback(const rclcpp::Parameter & new_param) override
     {
-      return on_change_callback_(new_param.get_value<T>());
+      try {
+        return on_change_callback_(new_param.get_value<T>());
+      } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
+        RCLCPP_ERROR(node_.get_logger(), e.what());
+        return false;
+      }
     }
 
 private:
@@ -151,6 +163,8 @@ private:
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn ERROR =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
+  static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn FAILURE =
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::FAILURE;
 
 private:
   std::vector<std::shared_ptr<ParameterBase>> params_;

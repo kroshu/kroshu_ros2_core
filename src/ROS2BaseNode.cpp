@@ -27,19 +27,24 @@ ROS2BaseNode::ROS2BaseNode(const std::string & node_name)
 {
 }
 
+ROS2BaseNode::ROS2BaseNode(const std::string & node_name, const rclcpp::NodeOptions & options)
+: rclcpp_lifecycle::LifecycleNode(node_name, options)
+{
+}
+
 ROS2BaseNode::~ROS2BaseNode()
 {
   ROS2BaseNode::on_shutdown(get_current_state());
 }
 
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-ROS2BaseNode::on_configure(const rclcpp_lifecycle::State & state)
+ROS2BaseNode::on_configure(const rclcpp_lifecycle::State &)
 {
   return SUCCESS;
 }
 
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-ROS2BaseNode::on_cleanup(const rclcpp_lifecycle::State & state)
+ROS2BaseNode::on_cleanup(const rclcpp_lifecycle::State &)
 {
   return SUCCESS;
 }
@@ -68,19 +73,19 @@ ROS2BaseNode::on_shutdown(const rclcpp_lifecycle::State & state)
 }
 
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-ROS2BaseNode::on_activate(const rclcpp_lifecycle::State & state)
+ROS2BaseNode::on_activate(const rclcpp_lifecycle::State &)
 {
   return SUCCESS;
 }
 
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-ROS2BaseNode::on_deactivate(const rclcpp_lifecycle::State & state)
+ROS2BaseNode::on_deactivate(const rclcpp_lifecycle::State &)
 {
   return SUCCESS;
 }
 
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-ROS2BaseNode::on_error(const rclcpp_lifecycle::State & state)
+ROS2BaseNode::on_error(const rclcpp_lifecycle::State &)
 {
   RCLCPP_INFO(get_logger(), "An error occured");
   return SUCCESS;
@@ -129,6 +134,7 @@ bool ROS2BaseNode::canSetParameter(const ParameterBase & param)
 void ROS2BaseNode::registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr)
 {
   params_.emplace_back(param_shared_ptr);
+  this->declare_parameter(param_shared_ptr->getName(), param_shared_ptr->getDefaultValue());
 }
 
 }  // namespace kroshu_ros2_core
