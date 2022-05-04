@@ -30,7 +30,7 @@ env:
     - SONARQUBE='true'
     - TEST_COVERAGE='true'
   matrix: # each line is a job
-    - ROS_DISTRO='dashing'
+    - ROS_DISTRO='foxy'
 
 notifications:
   email: false
