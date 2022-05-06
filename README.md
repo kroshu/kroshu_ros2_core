@@ -1,3 +1,7 @@
+Travis CI | SonarCloud
+------------| ---------------
+[![Build Status](https://travis-ci.com/kroshu/kroshu_ros2_core.svg?branch=master)](https://travis-ci.com/kroshu/kroshu_ros2_core) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kroshu_kroshu_ros2_core&metric=alert_status)](https://sonarcloud.io/dashboard?id=kroshu_kroshu_ros2_core)
+
 # Core classes which help function the repositories of kroshu.
 These classes provide functonalities which are frequently used in ROS2 environment.
 Deriving from these classes the user has a helpful wrapper around the base functionalities of ROS2.
