@@ -1,4 +1,4 @@
-Travis CI | SonarCloud
+Github CI | SonarCloud
 ------------| ---------------
 [![Build Status](https://github.com/kroshu/kroshu_ros2_core/workflows/CI/badge.svg?branch=master)](https://github.com/kroshu/kroshu_ros2_core/actions) | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kroshu_kroshu_ros2_core&metric=alert_status)](https://sonarcloud.io/dashboard?id=kroshu_kroshu_ros2_core)
 
