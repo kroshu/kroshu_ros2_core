@@ -21,7 +21,10 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 
 add_library(kroshu_ros2_core SHARED
-  src/ROS2BaseNode.cpp)
+  src/ROS2BaseNode.cpp
+  src/ROS2BaseLCNode.cpp
+  src/ParameterHandler.cpp
+  )
 ament_target_dependencies(kroshu_ros2_core rclcpp rclcpp_lifecycle lifecycle_msgs)
 
 ament_export_targets(export_kroshu_ros2_core HAS_LIBRARY_TARGET)

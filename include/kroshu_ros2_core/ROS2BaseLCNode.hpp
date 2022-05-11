@@ -1,0 +1,84 @@
+// Copyright 2020 Gergely Kovács
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#ifndef KROSHU_ROS2_CORE__ROS2BASELCNODE_HPP_
+#define KROSHU_ROS2_CORE__ROS2BASELCNODE_HPP_
+
+#include <string>
+#include <map>
+#include <vector>
+#include <memory>
+
+#include "rclcpp_lifecycle/lifecycle_node.hpp"
+#include "lifecycle_msgs/msg/state.hpp"
+
+#include "kroshu_ros2_core/ParameterHandler.hpp"
+
+namespace kroshu_ros2_core
+{
+
+class ROS2BaseLCNode : public rclcpp_lifecycle::LifecycleNode
+{
+public:
+  explicit ROS2BaseLCNode(const std::string & node_name);
+  explicit ROS2BaseLCNode(const std::string & node_name, const rclcpp::NodeOptions & options);
+  ~ROS2BaseLCNode() override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_configure(const rclcpp_lifecycle::State &) override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_cleanup(const rclcpp_lifecycle::State &) override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_shutdown(const rclcpp_lifecycle::State & state) override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_activate(const rclcpp_lifecycle::State &) override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_deactivate(const rclcpp_lifecycle::State &) override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_error(const rclcpp_lifecycle::State &) override;
+
+protected:
+  template<typename T>
+  void registerParameter(
+    const std::string & name, const T & value, const ParameterSetAccessRights & rights,
+    std::function<bool(const T &)> on_change_callback)
+  {
+    auto param_shared_ptr = std::make_shared<Parameter<T>>(
+      name, value, rights,
+      on_change_callback, this->get_node_parameters_interface());
+    param_handler_->registerParameter(param_shared_ptr);
+  }
+
+  static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn SUCCESS =
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn ERROR =
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
+  static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn FAILURE =
+    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::FAILURE;
+
+  std::shared_ptr<ParameterHandler> getParameterHandler() const;
+
+private:
+  std::shared_ptr<ParameterHandler> param_handler_;
+};
+
+}  // namespace kroshu_ros2_core
+
+
+#endif  // KROSHU_ROS2_CORE__ROS2BASELCNODE_HPP_
