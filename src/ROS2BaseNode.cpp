@@ -117,15 +117,15 @@ bool ROS2BaseNode::canSetParameter(const ParameterBase & param)
     if (!param.getRights().isSetAllowed(this->get_current_state().id())) {
       RCLCPP_ERROR(
         this->get_logger(),
-        "Parameter " + param.getName() +
-        " cannot be changed while in state %s",
-        this->get_current_state().label().c_str());
+        "Parameter %s cannot be changed while in state %s",
+        param.getName().c_str(), this->get_current_state().label().c_str());
       return false;
     }
   } catch (const std::out_of_range & e) {
     RCLCPP_ERROR(
       this->get_logger(),
-      "Parameter set access rights for parameter %s couldn't be determined");
+      "Parameter set access rights for parameter %s couldn't be determined",
+      param.getName().c_str());
     return false;
   }
   return true;
