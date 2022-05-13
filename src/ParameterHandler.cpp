@@ -20,8 +20,8 @@
 
 namespace kroshu_ros2_core
 {
-ParameterHandler::ParameterHandler(bool lifecyclye, rclcpp_lifecycle::LifecycleNode * node)
-: lifecycle_(lifecyclye), node_(node)
+ParameterHandler::ParameterHandler(rclcpp_lifecycle::LifecycleNode * node)
+: node_(node)
 {
 }
 
