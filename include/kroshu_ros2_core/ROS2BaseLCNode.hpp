@@ -31,8 +31,9 @@ namespace kroshu_ros2_core
 class ROS2BaseLCNode : public rclcpp_lifecycle::LifecycleNode
 {
 public:
-  explicit ROS2BaseLCNode(const std::string & node_name);
-  explicit ROS2BaseLCNode(const std::string & node_name, const rclcpp::NodeOptions & options);
+  explicit ROS2BaseLCNode(
+    const std::string & node_name,
+    const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
   ~ROS2BaseLCNode() override;
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn

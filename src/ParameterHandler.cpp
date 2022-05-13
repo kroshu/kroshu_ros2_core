@@ -20,7 +20,7 @@
 
 namespace kroshu_ros2_core
 {
-ParameterHandler::ParameterHandler(bool lifecyclye, rclcpp_lifecycle::LifecycleNode & node)
+ParameterHandler::ParameterHandler(bool lifecyclye, rclcpp_lifecycle::LifecycleNode * node)
 : lifecycle_(lifecyclye), node_(node)
 {
 }
@@ -47,15 +47,15 @@ rcl_interfaces::msg::SetParametersResult ParameterHandler::onParamChange(
 
 bool ParameterHandler::canSetParameter(const ParameterBase & param)
 {
-  /*if (node_ == nullptr) {
+  if (node_ == nullptr) {
     // Node is not lifecycle node, paramater can always be set
     return true;
-  }*/
+  }
   try {
-    if (!param.getRights().isSetAllowed(node_.get_current_state().id())) {
+    if (!param.getRights().isSetAllowed(node_->get_current_state().id())) {
       printf(
         "Parameter %s cannot be changed while in state %s",
-        param.getName().c_str(), node_.get_current_state().label().c_str());
+        param.getName().c_str(), node_->get_current_state().label().c_str());
       return false;
     }
   } catch (const std::out_of_range & e) {

@@ -131,7 +131,7 @@ private:
 class ParameterHandler
 {
 public:
-  explicit ParameterHandler(bool lifecycle, rclcpp_lifecycle::LifecycleNode & node);
+  explicit ParameterHandler(bool lifecycle, rclcpp_lifecycle::LifecycleNode * node);
 
   rcl_interfaces::msg::SetParametersResult onParamChange(
     const std::vector<rclcpp::Parameter> & parameters);
@@ -141,7 +141,7 @@ public:
 private:
   std::vector<std::shared_ptr<ParameterBase>> params_;
   bool lifecycle_;
-  rclcpp_lifecycle::LifecycleNode & node_;
+  rclcpp_lifecycle::LifecycleNode * node_;
 };
 }  // namespace kroshu_ros2_core
 

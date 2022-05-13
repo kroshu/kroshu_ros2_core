@@ -22,22 +22,12 @@
 namespace kroshu_ros2_core
 {
 
-ROS2BaseLCNode::ROS2BaseLCNode(const std::string & node_name)
-: rclcpp_lifecycle::LifecycleNode(node_name)
-{
-  param_handler_ =
-    std::make_shared<ParameterHandler>(
-    true,
-    *dynamic_cast<rclcpp_lifecycle::LifecycleNode *>(this));
-}
-
 ROS2BaseLCNode::ROS2BaseLCNode(const std::string & node_name, const rclcpp::NodeOptions & options)
 : rclcpp_lifecycle::LifecycleNode(node_name, options)
 {
   param_handler_ =
     std::make_shared<ParameterHandler>(
-    true,
-    *dynamic_cast<rclcpp_lifecycle::LifecycleNode *>(this));
+    true, this);
 }
 
 ROS2BaseLCNode::~ROS2BaseLCNode()
