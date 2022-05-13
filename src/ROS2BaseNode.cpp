@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <rclcpp_lifecycle/lifecycle_node.hpp>
-
 #include <string>
 #include <vector>
 #include <memory>
@@ -24,15 +22,16 @@
 namespace kroshu_ros2_core
 {
 
-template<typename T>
-void ROS2BaseNode::registerParameter(
-  const std::string & name, const T & value,
-  std::function<bool(const T &)> on_change_callback)
+ROS2BaseNode::ROS2BaseNode(const std::string & node_name, const rclcpp::NodeOptions & options)
+: rclcpp::Node(node_name, options)
 {
-  auto param_shared_ptr = std::make_shared<Parameter<T>>(
-    name, value, ParameterSetAccessRights(),
-    on_change_callback, this->get_node_parameters_interface());
-  param_handler_->registerParameter(param_shared_ptr);
+  param_handler_ =
+    std::make_shared<ParameterHandler>(
+    true, nullptr);
 }
 
+std::shared_ptr<ParameterHandler> ROS2BaseNode::getParameterHandler() const
+{
+  return param_handler_;
+}
 }  // namespace kroshu_ros2_core

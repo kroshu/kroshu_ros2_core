@@ -37,7 +37,7 @@ rcl_interfaces::msg::SetParametersResult ParameterHandler::onParamChange(
         return param_ptr->getName() == param.get_name();
       });
     if (found_param_it == params_.end()) {
-      printf("Invalid parameter name");
+      printf("Invalid parameter name\n");
     } else if (canSetParameter(*(*found_param_it))) {
       result.successful = (*found_param_it)->callCallback(param);
     }
@@ -53,13 +53,15 @@ bool ParameterHandler::canSetParameter(const ParameterBase & param)
   }
   try {
     if (!param.getRights().isSetAllowed(node_->get_current_state().id())) {
-      printf(
+      RCLCPP_ERROR(
+        node_->get_logger(),
         "Parameter %s cannot be changed while in state %s",
         param.getName().c_str(), node_->get_current_state().label().c_str());
       return false;
     }
   } catch (const std::out_of_range & e) {
-    printf(
+    RCLCPP_ERROR(
+      node_->get_logger(),
       "Parameter set access rights for parameter %s couldn't be determined",
       param.getName().c_str());
     return false;

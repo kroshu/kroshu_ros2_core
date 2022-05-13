@@ -21,7 +21,7 @@
 #include <memory>
 #include <functional>
 
-#include "rclcpp_lifecycle/lifecycle_node.hpp"
+#include <rclcpp/node.hpp>
 #include "lifecycle_msgs/msg/state.hpp"
 
 #include "kroshu_ros2_core/ParameterHandler.hpp"
@@ -29,18 +29,26 @@
 namespace kroshu_ros2_core
 {
 
-class ROS2BaseNode : public rclcpp_lifecycle::LifecycleNode
+class ROS2BaseNode : public rclcpp::Node
 {
 public:
-  explicit ROS2BaseNode(const std::string & node_name);
-  explicit ROS2BaseNode(const std::string & node_name, const rclcpp::NodeOptions & options);
-  ~ROS2BaseNode() override;
+  explicit ROS2BaseNode(
+    const std::string & node_name,
+    const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
 
 protected:
   template<typename T>
   void registerParameter(
     const std::string & name, const T & value,
-    std::function<bool(const T &)> on_change_callback);
+    std::function<bool(const T &)> on_change_callback)
+  {
+    auto param_shared_ptr = std::make_shared<Parameter<T>>(
+      name, value, ParameterSetAccessRights(),
+      on_change_callback, this->get_node_parameters_interface());
+    param_handler_->registerParameter(param_shared_ptr);
+  }
+
+  std::shared_ptr<ParameterHandler> getParameterHandler() const;
 
 private:
   std::shared_ptr<ParameterHandler> param_handler_;
