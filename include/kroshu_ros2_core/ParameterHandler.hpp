@@ -85,12 +85,16 @@ public:
   virtual bool callCallback(const rclcpp::Parameter &) const {return false;}
 
 protected:
+  void setDefaultValue(rclcpp::ParameterValue && value)
+  {
+    default_value_ = value;
+  }
   const std::string name_;
-  rclcpp::ParameterValue default_value_;
 
 private:
   const ParameterSetAccessRights rights_;
   rclcpp::node_interfaces::NodeParametersInterface::SharedPtr paramIF_;
+  rclcpp::ParameterValue default_value_;
 };
 
 template<typename T>
@@ -103,7 +107,7 @@ public:
     std::shared_ptr<rclcpp::node_interfaces::NodeParametersInterface> paramIF)
   : ParameterBase(name, rights, paramIF), on_change_callback_(on_change_callback)
   {
-    default_value_ = rclcpp::ParameterValue(value);
+    setDefaultValue(rclcpp::ParameterValue(value));
   }
 
   ~Parameter() override = default;

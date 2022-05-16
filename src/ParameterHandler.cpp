@@ -59,7 +59,7 @@ bool ParameterHandler::canSetParameter(const ParameterBase & param) const
         param.getName().c_str(), node_->get_current_state().label().c_str());
       return false;
     }
-  } catch (const std::out_of_range & e) {
+  } catch (const std::out_of_range &) {
     RCLCPP_ERROR(
       node_->get_logger(),
       "Parameter set access rights for parameter %s couldn't be determined",
