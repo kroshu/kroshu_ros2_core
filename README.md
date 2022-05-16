@@ -23,7 +23,7 @@ Example code for registering an integer parameter for both base nodes (onRateCha
 
   param_callback_ = this->add_on_set_parameters_callback(
     [this](const std::vector<rclcpp::Parameter> & parameters) {
-      return this->onParamChange(parameters);
+      return getParameterHandler().onParamChange(parameters);
     });  // global of type rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
     
   // Derived from  ROS2BaseLCNode
