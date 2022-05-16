@@ -82,7 +82,7 @@ public:
     return paramIF_;
   }
 
-  virtual bool callCallback(const rclcpp::Parameter &) {return false;}
+  virtual bool callCallback(const rclcpp::Parameter &) const {return false;}
 
 protected:
   const std::string name_;
@@ -114,7 +114,7 @@ public:
     return paramIF_->get_parameter(name_, place_holder);
   }
 
-  bool callCallback(const rclcpp::Parameter & new_param) override
+  bool callCallback(const rclcpp::Parameter & new_param) const override
   {
     try {
       return on_change_callback_(new_param.get_value<T>());
@@ -131,11 +131,11 @@ private:
 class ParameterHandler
 {
 public:
-  explicit ParameterHandler(rclcpp_lifecycle::LifecycleNode * node);
+  explicit ParameterHandler(rclcpp_lifecycle::LifecycleNode * node = nullptr);
 
   rcl_interfaces::msg::SetParametersResult onParamChange(
-    const std::vector<rclcpp::Parameter> & parameters);
-  bool canSetParameter(const ParameterBase & param);
+    const std::vector<rclcpp::Parameter> & parameters) const;
+  bool canSetParameter(const ParameterBase & param) const;
   void registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr);
 
 private:

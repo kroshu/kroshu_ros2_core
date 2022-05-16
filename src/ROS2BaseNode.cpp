@@ -25,10 +25,9 @@ namespace kroshu_ros2_core
 ROS2BaseNode::ROS2BaseNode(const std::string & node_name, const rclcpp::NodeOptions & options)
 : rclcpp::Node(node_name, options)
 {
-  param_handler_ = std::make_shared<ParameterHandler>(nullptr);
 }
 
-std::shared_ptr<ParameterHandler> ROS2BaseNode::getParameterHandler() const
+const ParameterHandler & ROS2BaseNode::getParameterHandler() const
 {
   return param_handler_;
 }

@@ -26,7 +26,7 @@ ParameterHandler::ParameterHandler(rclcpp_lifecycle::LifecycleNode * node)
 }
 
 rcl_interfaces::msg::SetParametersResult ParameterHandler::onParamChange(
-  const std::vector<rclcpp::Parameter> & parameters)
+  const std::vector<rclcpp::Parameter> & parameters) const
 {
   rcl_interfaces::msg::SetParametersResult result;
   result.successful = false;
@@ -45,7 +45,7 @@ rcl_interfaces::msg::SetParametersResult ParameterHandler::onParamChange(
   return result;
 }
 
-bool ParameterHandler::canSetParameter(const ParameterBase & param)
+bool ParameterHandler::canSetParameter(const ParameterBase & param) const
 {
   if (node_ == nullptr) {
     // Node is not lifecycle node, paramater can always be set

@@ -45,13 +45,13 @@ protected:
     auto param_shared_ptr = std::make_shared<Parameter<T>>(
       name, value, ParameterSetAccessRights(),
       on_change_callback, this->get_node_parameters_interface());
-    param_handler_->registerParameter(param_shared_ptr);
+    param_handler_.registerParameter(param_shared_ptr);
   }
 
-  std::shared_ptr<ParameterHandler> getParameterHandler() const;
+  const ParameterHandler & getParameterHandler() const;
 
 private:
-  std::shared_ptr<ParameterHandler> param_handler_;
+  ParameterHandler param_handler_;
 };
 
 }  // namespace kroshu_ros2_core

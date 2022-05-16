@@ -25,7 +25,7 @@ namespace kroshu_ros2_core
 ROS2BaseLCNode::ROS2BaseLCNode(const std::string & node_name, const rclcpp::NodeOptions & options)
 : rclcpp_lifecycle::LifecycleNode(node_name, options)
 {
-  param_handler_ = std::make_shared<ParameterHandler>(this);
+  param_handler_ = ParameterHandler(this);
 }
 
 ROS2BaseLCNode::~ROS2BaseLCNode()
@@ -87,7 +87,7 @@ ROS2BaseLCNode::on_error(const rclcpp_lifecycle::State &)
   return SUCCESS;
 }
 
-std::shared_ptr<ParameterHandler> ROS2BaseLCNode::getParameterHandler() const
+const ParameterHandler & ROS2BaseLCNode::getParameterHandler() const
 {
   return param_handler_;
 }
