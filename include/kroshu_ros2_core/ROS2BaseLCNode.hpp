@@ -34,7 +34,6 @@ public:
   explicit ROS2BaseLCNode(
     const std::string & node_name,
     const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
-  ~ROS2BaseLCNode() override;
 
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_configure(const rclcpp_lifecycle::State &) override;

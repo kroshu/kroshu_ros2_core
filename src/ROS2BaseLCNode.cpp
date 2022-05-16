@@ -28,11 +28,6 @@ ROS2BaseLCNode::ROS2BaseLCNode(const std::string & node_name, const rclcpp::Node
   param_handler_ = ParameterHandler(this);
 }
 
-ROS2BaseLCNode::~ROS2BaseLCNode()
-{
-  ROS2BaseLCNode::on_shutdown(get_current_state());
-}
-
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
 ROS2BaseLCNode::on_configure(const rclcpp_lifecycle::State &)
 {
