@@ -21,7 +21,7 @@
 #include <memory>
 #include <functional>
 
-#include <rclcpp/node.hpp>
+#include "rclcpp/node.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
 
 #include "kroshu_ros2_core/ParameterHandler.hpp"
