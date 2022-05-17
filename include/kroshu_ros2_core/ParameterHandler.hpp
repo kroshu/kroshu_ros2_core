@@ -50,90 +50,89 @@ struct ParameterSetAccessRights
   }
 };
 
-class ParameterBase
-{
-public:
-  ParameterBase(
-    const std::string & name, const ParameterSetAccessRights & rights,
-    rclcpp::node_interfaces::NodeParametersInterface::SharedPtr param_IF)
-  : name_(name), rights_(rights), paramIF_(param_IF)
-  {
-  }
-
-  virtual ~ParameterBase() = default;
-
-  const std::string & getName() const
-  {
-    return name_;
-  }
-
-  const ParameterSetAccessRights & getRights() const
-  {
-    return rights_;
-  }
-
-  const rclcpp::ParameterValue & getDefaultValue() const
-  {
-    return default_value_;
-  }
-
-  rclcpp::node_interfaces::NodeParametersInterface::SharedPtr getParameterInterface() const
-  {
-    return paramIF_;
-  }
-
-  virtual bool callCallback(const rclcpp::Parameter &) const {return false;}
-
-protected:
-  void setDefaultValue(rclcpp::ParameterValue && value)
-  {
-    default_value_ = value;
-  }
-  const std::string name_;
-
-private:
-  const ParameterSetAccessRights rights_;
-  rclcpp::node_interfaces::NodeParametersInterface::SharedPtr paramIF_;
-  rclcpp::ParameterValue default_value_;
-};
-
-template<typename T>
-class Parameter : public ParameterBase
-{
-public:
-  Parameter(
-    const std::string & name, const T & value, const ParameterSetAccessRights & rights,
-    std::function<bool(const T &)> on_change_callback,
-    std::shared_ptr<rclcpp::node_interfaces::NodeParametersInterface> paramIF)
-  : ParameterBase(name, rights, paramIF), on_change_callback_(on_change_callback)
-  {
-    setDefaultValue(rclcpp::ParameterValue(value));
-  }
-
-  ~Parameter() override = default;
-
-  bool getValue(
-    T & place_holder) const
-  {
-    return paramIF_->get_parameter(name_, place_holder);
-  }
-
-  bool callCallback(const rclcpp::Parameter & new_param) const override
-  {
-    try {
-      return on_change_callback_(new_param.get_value<T>());
-    } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
-      printf("%s", e.what());
-      return false;
-    }
-  }
-
-private:
-  const std::function<bool(const T &)> on_change_callback_;
-};
-
 class ParameterHandler
 {
+	class ParameterBase
+	{
+	public:
+	  ParameterBase(
+	    const std::string & name, const ParameterSetAccessRights & rights,
+	    rclcpp::node_interfaces::NodeParametersInterface::SharedPtr param_IF)
+	  : name_(name), rights_(rights), paramIF_(param_IF)
+	  {
+	  }
+
+	  virtual ~ParameterBase() = default;
+
+	  const std::string & getName() const
+	  {
+	    return name_;
+	  }
+
+	  const ParameterSetAccessRights & getRights() const
+	  {
+	    return rights_;
+	  }
+
+	  const rclcpp::ParameterValue & getDefaultValue() const
+	  {
+	    return default_value_;
+	  }
+
+	  rclcpp::node_interfaces::NodeParametersInterface::SharedPtr getParameterInterface() const
+	  {
+	    return paramIF_;
+	  }
+
+	  virtual bool callCallback(const rclcpp::Parameter &) const {return false;}
+
+	protected:
+	  void setDefaultValue(rclcpp::ParameterValue && value)
+	  {
+	    default_value_ = value;
+	  }
+	  const std::string name_;
+
+	private:
+	  const ParameterSetAccessRights rights_;
+	  rclcpp::node_interfaces::NodeParametersInterface::SharedPtr paramIF_;
+	  rclcpp::ParameterValue default_value_;
+	};
+
+	template<typename T>
+	class Parameter : public ParameterBase
+	{
+	public:
+	  Parameter(
+	    const std::string & name, const T & value, const ParameterSetAccessRights & rights,
+	    std::function<bool(const T &)> on_change_callback,
+	    std::shared_ptr<rclcpp::node_interfaces::NodeParametersInterface> paramIF)
+	  : ParameterBase(name, rights, paramIF), on_change_callback_(on_change_callback)
+	  {
+	    setDefaultValue(rclcpp::ParameterValue(value));
+	  }
+
+	  ~Parameter() override = default;
+
+	  bool getValue(
+	    T & place_holder) const
+	  {
+	    return paramIF_->get_parameter(name_, place_holder);
+	  }
+
+	  bool callCallback(const rclcpp::Parameter & new_param) const override
+	  {
+	    try {
+	      return on_change_callback_(new_param.get_value<T>());
+	    } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
+	      printf("%s", e.what());
+	      return false;
+	    }
+	  }
+
+	private:
+	  const std::function<bool(const T &)> on_change_callback_;
+	};
 public:
   explicit ParameterHandler(rclcpp_lifecycle::LifecycleNode * node = nullptr);
 
@@ -145,6 +144,16 @@ public:
 private:
   std::vector<std::shared_ptr<ParameterBase>> params_;
   rclcpp_lifecycle::LifecycleNode * node_;
+
+  template<typename T>
+  friend void registerParameter(
+		    const std::string & name, const T & value, const ParameterSetAccessRights & rights,
+		    std::function<bool(const T &)> on_change_callback);
+  template<typename T>
+  friend void registerParameter(
+		    const std::string & name, const T & value,
+		    std::function<bool(const T &)> on_change_callback);
+
 };
 }  // namespace kroshu_ros2_core
 

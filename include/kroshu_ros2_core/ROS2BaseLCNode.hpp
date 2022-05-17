@@ -27,7 +27,6 @@
 
 namespace kroshu_ros2_core
 {
-
 class ROS2BaseLCNode : public rclcpp_lifecycle::LifecycleNode
 {
 public:
@@ -59,7 +58,7 @@ protected:
     const std::string & name, const T & value, const ParameterSetAccessRights & rights,
     std::function<bool(const T &)> on_change_callback)
   {
-    auto param_shared_ptr = std::make_shared<Parameter<T>>(
+    auto param_shared_ptr = std::make_shared<ParameterHandler::Parameter<T>>(
       name, value, rights,
       on_change_callback, this->get_node_parameters_interface());
     param_handler_.registerParameter(param_shared_ptr);

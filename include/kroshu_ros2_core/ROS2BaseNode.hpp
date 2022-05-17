@@ -28,7 +28,6 @@
 
 namespace kroshu_ros2_core
 {
-
 class ROS2BaseNode : public rclcpp::Node
 {
 public:
@@ -42,7 +41,7 @@ protected:
     const std::string & name, const T & value,
     std::function<bool(const T &)> on_change_callback)
   {
-    auto param_shared_ptr = std::make_shared<Parameter<T>>(
+    auto param_shared_ptr = std::make_shared<ParameterHandler::Parameter<T>>(
       name, value, ParameterSetAccessRights(),
       on_change_callback, this->get_node_parameters_interface());
     param_handler_.registerParameter(param_shared_ptr);
@@ -53,7 +52,6 @@ protected:
 private:
   ParameterHandler param_handler_;
 };
-
 }  // namespace kroshu_ros2_core
 
 #endif  // KROSHU_ROS2_CORE__ROS2BASENODE_HPP_
