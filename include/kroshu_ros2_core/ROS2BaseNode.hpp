@@ -19,157 +19,38 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <functional>
 
-#include "rclcpp_lifecycle/lifecycle_node.hpp"
+#include "rclcpp/node.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
+
+#include "kroshu_ros2_core/ParameterHandler.hpp"
 
 namespace kroshu_ros2_core
 {
-
-class ROS2BaseNode : public rclcpp_lifecycle::LifecycleNode
+class ROS2BaseNode : public rclcpp::Node
 {
 public:
-  explicit ROS2BaseNode(const std::string & node_name);
-  explicit ROS2BaseNode(const std::string & node_name, const rclcpp::NodeOptions & options);
-  ~ROS2BaseNode() override;
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_configure(const rclcpp_lifecycle::State &) override;
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_cleanup(const rclcpp_lifecycle::State &) override;
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_shutdown(const rclcpp_lifecycle::State & state) override;
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_activate(const rclcpp_lifecycle::State &) override;
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_deactivate(const rclcpp_lifecycle::State &) override;
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  on_error(const rclcpp_lifecycle::State &) override;
+  explicit ROS2BaseNode(
+    const std::string & node_name,
+    const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
 
 protected:
-  struct ParameterSetAccessRights
-  {
-    bool unconfigured;
-    bool inactive;
-    bool active;
-    bool finalized;
-    bool isSetAllowed(std::uint8_t current_state) const
-    {
-      switch (current_state) {
-        case lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED:
-          return unconfigured;
-        case lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE:
-          return inactive;
-        case lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE:
-          return active;
-        case lifecycle_msgs::msg::State::PRIMARY_STATE_FINALIZED:
-          return finalized;
-        default:
-          return false;
-      }
-    }
-  };
-
-  class ParameterBase
-  {
-public:
-    ParameterBase(
-      const std::string & name, const ParameterSetAccessRights & rights)
-    : name_(name), rights_(rights)
-    {
-    }
-
-    virtual ~ParameterBase() = default;
-
-    const std::string & getName() const
-    {
-      return name_;
-    }
-
-    const ParameterSetAccessRights & getRights() const
-    {
-      return rights_;
-    }
-
-    const rclcpp::ParameterValue & getDefaultValue() const
-    {
-      return default_value_;
-    }
-
-    virtual bool callCallback(const rclcpp::Parameter &) {return false;}
-
-protected:
-    const std::string name_;
-    rclcpp::ParameterValue default_value_;
-
-private:
-    const ParameterSetAccessRights rights_;
-  };
-
   template<typename T>
-  class Parameter : public ParameterBase
+  void registerParameter(
+    const std::string & name, const T & value,
+    std::function<bool(const T &)> on_change_callback)
   {
-public:
-    Parameter(
-      const std::string & name, const T & value, const ParameterSetAccessRights & rights,
-      std::function<bool(const T &)> on_change_callback,
-      ROS2BaseNode & node)
-    : ParameterBase(name, rights), on_change_callback_(on_change_callback),
-      node_(node)
-    {
-      default_value_ = rclcpp::ParameterValue(value);
-    }
+    param_handler_.registerParameter<T>(
+      name, value,
+      on_change_callback, this->get_node_parameters_interface());
+  }
 
-    ~Parameter() override = default;
-
-    bool getValue(
-      T & place_holder) const
-    {
-      return node_.get_parameter(name_, place_holder);
-    }
-
-    bool setValue(const T & new_value) const
-    {
-      rclcpp::Parameter new_param(name_, new_value);
-      return node_.set_parameter(new_param).successful;
-    }
-
-    bool callCallback(const rclcpp::Parameter & new_param) override
-    {
-      try {
-        return on_change_callback_(new_param.get_value<T>());
-      } catch (const rclcpp::exceptions::InvalidParameterTypeException & e) {
-        RCLCPP_ERROR(node_.get_logger(), e.what());
-        return false;
-      }
-    }
+  const ParameterHandler & getParameterHandler() const;
 
 private:
-    const std::function<bool(const T &)> on_change_callback_;
-    ROS2BaseNode & node_;
-  };
-
-  rcl_interfaces::msg::SetParametersResult onParamChange(
-    const std::vector<rclcpp::Parameter> & parameters);
-  bool canSetParameter(const ParameterBase & param);
-  void registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr);
-
-  static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn SUCCESS =
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn ERROR =
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
-  static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn FAILURE =
-    rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::FAILURE;
-
-private:
-  std::vector<std::shared_ptr<ParameterBase>> params_;
+  ParameterHandler param_handler_;
 };
-
 }  // namespace kroshu_ros2_core
 
 #endif  // KROSHU_ROS2_CORE__ROS2BASENODE_HPP_
