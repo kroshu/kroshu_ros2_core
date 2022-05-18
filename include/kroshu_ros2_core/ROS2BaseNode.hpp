@@ -41,10 +41,9 @@ protected:
     const std::string & name, const T & value,
     std::function<bool(const T &)> on_change_callback)
   {
-    auto param_shared_ptr = std::make_shared<ParameterHandler::Parameter<T>>(
-      name, value, ParameterSetAccessRights(),
+    param_handler_.registerParameter<T>(
+      name, value,
       on_change_callback, this->get_node_parameters_interface());
-    param_handler_.registerParameter(param_shared_ptr);
   }
 
   const ParameterHandler & getParameterHandler() const;

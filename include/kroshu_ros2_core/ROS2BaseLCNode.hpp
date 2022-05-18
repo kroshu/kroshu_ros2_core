@@ -58,10 +58,9 @@ protected:
     const std::string & name, const T & value, const ParameterSetAccessRights & rights,
     std::function<bool(const T &)> on_change_callback)
   {
-    auto param_shared_ptr = std::make_shared<ParameterHandler::Parameter<T>>(
+    param_handler_.registerParameter<T>(
       name, value, rights,
       on_change_callback, this->get_node_parameters_interface());
-    param_handler_.registerParameter(param_shared_ptr);
   }
 
   static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn SUCCESS =

@@ -36,6 +36,7 @@ rcl_interfaces::msg::SetParametersResult ParameterHandler::onParamChange(
       [&param](auto param_ptr) {
         return param_ptr->getName() == param.get_name();
       });
+    // When used properly, we should not reach this, but better to keep additional check to filter improper use
     if (found_param_it == params_.end()) {
       printf("Invalid parameter name\n");
     } else if (canSetParameter(*(*found_param_it))) {

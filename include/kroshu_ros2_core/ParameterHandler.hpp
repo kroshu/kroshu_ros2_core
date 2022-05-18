@@ -140,20 +140,34 @@ public:
   rcl_interfaces::msg::SetParametersResult onParamChange(
     const std::vector<rclcpp::Parameter> & parameters) const;
   bool canSetParameter(const ParameterBase & param) const;
-  void registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr);
+
+  template<typename T>
+  void registerParameter(
+    const std::string & name, const T & value, const ParameterSetAccessRights & rights,
+    std::function<bool(const T &)> on_change_callback,
+    rclcpp::node_interfaces::NodeParametersInterface::SharedPtr param_IF)
+  {
+    auto param_shared_ptr = std::make_shared<ParameterHandler::Parameter<T>>(
+      name, value, rights,
+      on_change_callback, param_IF);
+    registerParameter(param_shared_ptr);
+  }
+  template<typename T>
+  void registerParameter(
+    const std::string & name, const T & value,
+    std::function<bool(const T &)> on_change_callback,
+    rclcpp::node_interfaces::NodeParametersInterface::SharedPtr param_IF)
+  {
+    auto param_shared_ptr = std::make_shared<ParameterHandler::Parameter<T>>(
+      name, value, ParameterSetAccessRights(),
+      on_change_callback, param_IF);
+    registerParameter(param_shared_ptr);
+  }
 
 private:
   std::vector<std::shared_ptr<ParameterBase>> params_;
   rclcpp_lifecycle::LifecycleNode * node_;
-
-  template<typename T>
-  friend void registerParameter(
-    const std::string & name, const T & value, const ParameterSetAccessRights & rights,
-    std::function<bool(const T &)> on_change_callback);
-  template<typename T>
-  friend void registerParameter(
-    const std::string & name, const T & value,
-    std::function<bool(const T &)> on_change_callback);
+  void registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr);
 };
 }  // namespace kroshu_ros2_core
 
