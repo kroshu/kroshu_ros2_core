@@ -6,7 +6,7 @@ Github CI | SonarCloud
 These classes provide functonalities which are frequently used in ROS2 environment.
 Deriving from these classes the user has a helpful wrapper around the base functionalities of ROS2.
 
-Right there are two classes implemented in this repository, ROS2BaseNode for simple parameter handling, and ROS2BaseLCNode, which additionally furthers the rclcpp_lifecycle::LifecycleNode class by implementing lifecycle functions which would be usually implemented in the same way in every case. These are virtual functions, so it is possible to override them in the case of a different desired implementation.
+Right now there are two classes implemented in this repository, ROS2BaseNode for simple parameter handling, and ROS2BaseLCNode, which additionally furthers the rclcpp_lifecycle::LifecycleNode class by implementing lifecycle functions which would be usually implemented in the same way in every case. These are virtual functions, so it is possible to override them in the case of a different desired implementation.
 
 The parameter handling is better designed, than the one provided by the rclcpp::Parameter class.
 This is done with the help of the ParameterHandler class, which includes a ParameterBase and a template Parameter<T> nested class for this purpose. They are extended with the member functions of the ParameterHandler class, which handle all the node's parameters and the related issues with the help of a heterogeneous collection.
