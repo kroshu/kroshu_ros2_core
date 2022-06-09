@@ -52,7 +52,6 @@ public:
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_error(const rclcpp_lifecycle::State &) override;
 
-protected:
   template<typename T>
   void registerParameter(
     const std::string & name, const T & value, const ParameterSetAccessRights & rights,
@@ -62,15 +61,15 @@ protected:
       name, value, rights,
       on_change_callback, this->get_node_parameters_interface());
   }
+  const ParameterHandler & getParameterHandler() const;
 
+protected:
   static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn SUCCESS =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn ERROR =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::ERROR;
   static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn FAILURE =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::FAILURE;
-
-  const ParameterHandler & getParameterHandler() const;
 
 private:
   ParameterHandler param_handler_;

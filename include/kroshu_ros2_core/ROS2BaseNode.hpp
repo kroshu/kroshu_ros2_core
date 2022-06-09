@@ -35,7 +35,7 @@ public:
     const std::string & node_name,
     const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
 
-protected:
+  const ParameterHandler & getParameterHandler() const;
   template<typename T>
   void registerParameter(
     const std::string & name, const T & value,
@@ -45,8 +45,6 @@ protected:
       name, value,
       on_change_callback, this->get_node_parameters_interface());
   }
-
-  const ParameterHandler & getParameterHandler() const;
 
 private:
   ParameterHandler param_handler_;
