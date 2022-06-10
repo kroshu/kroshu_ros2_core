@@ -33,6 +33,7 @@ struct ParameterSetAccessRights
   bool inactive;
   bool active;
   bool finalized;
+  bool configuring = false;
   bool isSetAllowed(std::uint8_t current_state) const
   {
     switch (current_state) {
@@ -44,6 +45,8 @@ struct ParameterSetAccessRights
         return active;
       case lifecycle_msgs::msg::State::PRIMARY_STATE_FINALIZED:
         return finalized;
+      case lifecycle_msgs::msg::State::TRANSITION_STATE_CONFIGURING:
+        return configuring;
       default:
         return false;
     }
@@ -113,12 +116,6 @@ public:
     }
 
     ~Parameter() override = default;
-
-    bool getValue(
-      T & place_holder) const
-    {
-      return paramIF_->get_parameter(name_, place_holder);
-    }
 
     bool callCallback(const rclcpp::Parameter & new_param) const override
     {
