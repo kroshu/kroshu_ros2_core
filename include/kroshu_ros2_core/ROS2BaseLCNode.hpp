@@ -64,6 +64,7 @@ public:
   const ParameterHandler & getParameterHandler() const;
 
 protected:
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr ParamCallback() const;
   static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn SUCCESS =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn ERROR =
@@ -73,6 +74,7 @@ protected:
 
 private:
   ParameterHandler param_handler_;
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_callback_;
 };
 
 }  // namespace kroshu_ros2_core
