@@ -25,6 +25,10 @@ namespace kroshu_ros2_core
 ROS2BaseNode::ROS2BaseNode(const std::string & node_name, const rclcpp::NodeOptions & options)
 : rclcpp::Node(node_name, options)
 {
+  param_callback_ = this->add_on_set_parameters_callback(
+    [this](const std::vector<rclcpp::Parameter> & parameters) {
+      return param_handler_.onParamChange(parameters);
+    });
 }
 
 const ParameterHandler & ROS2BaseNode::getParameterHandler() const

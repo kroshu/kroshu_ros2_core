@@ -46,6 +46,9 @@ public:
       on_change_callback, this->get_node_parameters_interface());
   }
 
+protected:
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_callback_;
+
 private:
   ParameterHandler param_handler_;
 };

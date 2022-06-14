@@ -64,6 +64,7 @@ public:
   const ParameterHandler & getParameterHandler() const;
 
 protected:
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_callback_;
   static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn SUCCESS =
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   static const rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn ERROR =
