@@ -26,6 +26,10 @@ ROS2BaseLCNode::ROS2BaseLCNode(const std::string & node_name, const rclcpp::Node
 : rclcpp_lifecycle::LifecycleNode(node_name, options)
 {
   param_handler_ = ParameterHandler(this);
+  param_callback_ = this->add_on_set_parameters_callback(
+    [this](const std::vector<rclcpp::Parameter> & parameters) {
+      return param_handler_.onParamChange(parameters);
+    });
 }
 
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
@@ -87,4 +91,9 @@ const ParameterHandler & ROS2BaseLCNode::getParameterHandler() const
   return param_handler_;
 }
 
+rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr ROS2BaseLCNode::ParamCallback()
+const
+{
+  return param_callback_;
+}
 }  // namespace kroshu_ros2_core

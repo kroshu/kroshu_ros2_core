@@ -20,12 +20,6 @@ To declare a parameter and manage its changes, the registerParameter\<T\> templa
 
 Example code for registering an integer parameter for both base nodes (onRateChangeRequest() returns a boolean):
 ```C++
-
-  param_callback_ = this->add_on_set_parameters_callback(
-    [this](const std::vector<rclcpp::Parameter> & parameters) {
-      return getParameterHandler().onParamChange(parameters);
-    });  // global of type rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
-    
   // Derived from  ROS2BaseLCNode
   registerParameter<int>(
     "rate", 2, kroshu_ros2_core::ParameterSetAccessRights {true, true,
@@ -40,7 +34,21 @@ Example code for registering an integer parameter for both base nodes (onRateCha
     });
 ```
 
-The add_on_set_parameters_callback() should be called before the parameter declaration, otherwise the initial values of the parameters will not be synced from the parameter server.
+The add_on_set_parameters_callback() is called in the base node constructors, always before the parameter declarations, so the initial values of the parameters will be always synced from the parameter server. To modify this callback (e.g. add a condition to all parameter change callbacks), one has to remove the registered callback and add the new one:
+
+```C++
+  remove_on_set_parameters_callback(ParamCallback().get());
+  ParamCallback() = this->add_on_set_parameters_callback(
+    [this](const std::vector<rclcpp::Parameter> & parameters) {
+      if (<condition>) {
+        return getParameterHandler().onParamChange(parameters);
+      } else {
+        rcl_interfaces::msg::SetParametersResult result;
+        result.successful = false;
+        return result;
+      }
+    });
+```
 
 The template argument of the Parameter class should be one of the following (others result in a compile error):
  - bool
