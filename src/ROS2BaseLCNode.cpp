@@ -91,4 +91,9 @@ const ParameterHandler & ROS2BaseLCNode::getParameterHandler() const
   return param_handler_;
 }
 
+rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr ROS2BaseLCNode::ParamCallback()
+const
+{
+  return param_callback_;
+}
 }  // namespace kroshu_ros2_core

@@ -47,10 +47,11 @@ public:
   }
 
 protected:
-  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_callback_;
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr ParamCallback() const;
 
 private:
   ParameterHandler param_handler_;
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_callback_;
 };
 }  // namespace kroshu_ros2_core
 

@@ -35,4 +35,10 @@ const ParameterHandler & ROS2BaseNode::getParameterHandler() const
 {
   return param_handler_;
 }
+
+rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr ROS2BaseNode::ParamCallback()
+const
+{
+  return param_callback_;
+}
 }  // namespace kroshu_ros2_core
