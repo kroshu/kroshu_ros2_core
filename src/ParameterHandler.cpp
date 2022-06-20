@@ -71,11 +71,16 @@ bool ParameterHandler::canSetParameter(const ParameterBase & param) const
   return true;
 }
 
-void ParameterHandler::registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr)
+void ParameterHandler::registerParameter(
+  std::shared_ptr<ParameterBase> param_shared_ptr,
+  bool block)
 {
   params_.emplace_back(param_shared_ptr);
   param_shared_ptr->getParameterInterface()->declare_parameter(
     param_shared_ptr->getName(), param_shared_ptr->getDefaultValue());
+  if (block) {
+    param_shared_ptr->blockParameter();
+  }
 }
 
 }  // namespace kroshu_ros2_core

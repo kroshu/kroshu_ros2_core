@@ -87,6 +87,8 @@ public:
       return paramIF_;
     }
 
+    virtual void blockParameter() = 0;
+
     virtual bool callCallback(const rclcpp::Parameter &) const {return false;}
 
 protected:
@@ -127,8 +129,17 @@ public:
       }
     }
 
+    void blockParameter() override
+    {
+      on_change_callback_ = [this](const T &) -> bool
+        {
+          printf("Parameter %s can be set only at startup\n", name_.c_str());
+          return false;
+        };
+    }
+
 private:
-    const std::function<bool(const T &)> on_change_callback_;
+    std::function<bool(const T &)> on_change_callback_;
   };
 
 public:
@@ -142,29 +153,29 @@ public:
   void registerParameter(
     const std::string & name, const T & value, const ParameterSetAccessRights & rights,
     std::function<bool(const T &)> on_change_callback,
-    rclcpp::node_interfaces::NodeParametersInterface::SharedPtr param_IF)
+    rclcpp::node_interfaces::NodeParametersInterface::SharedPtr param_IF, bool block = false)
   {
     auto param_shared_ptr = std::make_shared<ParameterHandler::Parameter<T>>(
       name, value, rights,
       on_change_callback, param_IF);
-    registerParameter(param_shared_ptr);
+    registerParameter(param_shared_ptr, block);
   }
   template<typename T>
   void registerParameter(
     const std::string & name, const T & value,
     std::function<bool(const T &)> on_change_callback,
-    rclcpp::node_interfaces::NodeParametersInterface::SharedPtr param_IF)
+    rclcpp::node_interfaces::NodeParametersInterface::SharedPtr param_IF, bool block = false)
   {
     auto param_shared_ptr = std::make_shared<ParameterHandler::Parameter<T>>(
       name, value, ParameterSetAccessRights(),
       on_change_callback, param_IF);
-    registerParameter(param_shared_ptr);
+    registerParameter(param_shared_ptr, block);
   }
 
 private:
   std::vector<std::shared_ptr<ParameterBase>> params_;
   rclcpp_lifecycle::LifecycleNode * node_;
-  void registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr);
+  void registerParameter(std::shared_ptr<ParameterBase> param_shared_ptr, bool block);
 };
 }  // namespace kroshu_ros2_core
 
