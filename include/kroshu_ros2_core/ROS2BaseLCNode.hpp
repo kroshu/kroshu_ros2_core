@@ -63,7 +63,7 @@ public:
   }
 
   template<typename T>
-  void registerArgument(
+  void registerStaticParameter(
     const std::string & name, const T & value, const ParameterSetAccessRights & rights,
     std::function<bool(const T &)> on_change_callback)
   {
