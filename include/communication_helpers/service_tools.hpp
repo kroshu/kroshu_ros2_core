@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef KUKA_SUNRISE__INTERNAL__SERVICE_TOOLS_HPP_
-#define KUKA_SUNRISE__INTERNAL__SERVICE_TOOLS_HPP_
+#ifndef COMMUNICATION_HELPERS__SERVICE_TOOLS_HPP_
+#define COMMUNICATION_HELPERS__SERVICE_TOOLS_HPP_
 
 #include <future>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
 
-namespace kuka_sunrise
+namespace kroshu_ros2_core
 {
 
 template<typename FutureT, typename WaitTimeT>
@@ -61,6 +61,6 @@ sendRequest(
   }
   return future_result.get();
 }
-}  // namespace kuka_sunrise
+}  // namespace kroshu_ros2_core
 
-#endif  // KUKA_SUNRISE__INTERNAL__SERVICE_TOOLS_HPP_
+#endif  // COMMUNICATION_HELPERS__SERVICE_TOOLS_HPP_

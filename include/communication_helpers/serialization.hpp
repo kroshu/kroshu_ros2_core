@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef KUKA_SUNRISE__INTERNAL__SERIALIZATION_HPP_
-#define KUKA_SUNRISE__INTERNAL__SERIALIZATION_HPP_
+#ifndef COMMUNICATION_HELPERS__SERIALIZATION_HPP_
+#define COMMUNICATION_HELPERS__SERIALIZATION_HPP_
 
 #include <vector>
 #include <cstdint>
 #include <algorithm>
 
-namespace kuka_sunrise
+namespace kroshu_ros2_core
 {
 
 int serializeNext(int integer_in, std::vector<std::uint8_t> & serialized_out)
@@ -69,6 +69,6 @@ int deserializeNext(const std::vector<std::uint8_t> & serialized_in, double & do
   return sizeof(int);
 }
 
-}  // namespace kuka_sunrise
+}  // namespace kroshu_ros2_core
 
-#endif  // KUKA_SUNRISE__INTERNAL__SERIALIZATION_HPP_
+#endif  // COMMUNICATION_HELPERS__SERIALIZATION_HPP_
