@@ -34,7 +34,6 @@ ament_export_libraries(${PROJECT_NAME})
 
 
 add_library(communication_helpers SHARED
-  include/communication_helpers/activatable_interface.hpp
   include/communication_helpers/serialization.hpp
   include/communication_helpers/service_tools.hpp)
 ament_target_dependencies(communication_helpers rclcpp)
@@ -54,7 +53,7 @@ install(TARGETS kroshu_ros2_core
     RUNTIME DESTINATION bin
     INCLUDES DESTINATION include)
 
-install(DIRECTORY include/communication_helpers DESTINATION include/communication_helpers)
+install(DIRECTORY include/communication_helpers DESTINATION include)
 install(
   TARGETS communication_helpers
   EXPORT communication_helpers
