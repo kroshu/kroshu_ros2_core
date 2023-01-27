@@ -31,6 +31,17 @@ ament_export_targets(export_kroshu_ros2_core HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp rclcpp_lifecycle lifecycle_msgs)
 ament_export_libraries(${PROJECT_NAME})
 
+
+
+add_library(communication_helpers SHARED
+  include/communication_helpers/serialization.hpp
+  include/communication_helpers/service_tools.hpp)
+ament_target_dependencies(communication_helpers rclcpp)
+set_target_properties(communication_helpers PROPERTIES LINKER_LANGUAGE CXX)
+
+ament_export_targets(communication_helpers HAS_LIBRARY_TARGET)
+ament_export_dependencies(rclcpp)
+
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION include/${PROJECT_NAME}/
 )
@@ -41,6 +52,14 @@ install(TARGETS kroshu_ros2_core
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     INCLUDES DESTINATION include)
+
+install(DIRECTORY include/communication_helpers DESTINATION include)
+install(
+  TARGETS communication_helpers
+  EXPORT communication_helpers
+  LIBRARY DESTINATION lib
+  INCLUDES DESTINATION include
+)
 
 ament_export_include_directories(include)
 
