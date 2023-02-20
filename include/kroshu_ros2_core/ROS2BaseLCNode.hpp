@@ -64,11 +64,11 @@ public:
 
   template<typename T>
   void registerStaticParameter(
-    const std::string & name, const T & value, const ParameterSetAccessRights & rights,
+    const std::string & name, const T & value,
     std::function<bool(const T &)> on_change_callback)
   {
     param_handler_.registerParameter<T>(
-      name, value, rights,
+      name, value, ParameterSetAccessRights{true, false, false, false, false},
       on_change_callback, this->get_node_parameters_interface(), true);
   }
   const ParameterHandler & getParameterHandler() const;
