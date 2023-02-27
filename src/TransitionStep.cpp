@@ -16,11 +16,14 @@
 
 namespace kroshu_ros2_core
 {
-TransitionStep::TransitionStep(/* args */)
+
+bool TransitionStep::CallForwardCallback() const
 {
+  return in_forward_transition_callback_();
 }
 
-TransitionStep::~TransitionStep()
+bool TransitionStep::CallReversedCallback() const
 {
+  return in_reversed_transition_callback_();
 }
 } // namespace kroshu_ros2_core

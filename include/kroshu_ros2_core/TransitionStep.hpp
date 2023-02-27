@@ -15,18 +15,35 @@
 #ifndef KROSHU_ROS2_CORE__TRANSITION_STEP_HPP_
 #define KROSHU_ROS2_CORE__TRANSITION_STEP_HPP_
 
+#include <functional>
+
 namespace kroshu_ros2_core
 {
+//template<typename T>
 class TransitionStep
 {
-private:
-  /* data */
-
 public:
-  TransitionStep(/* args */);
-  ~TransitionStep();
+  TransitionStep(
+    std::function<bool(/*const T &*/)> in_forward_transition_callback,
+    std::function<bool(/*const T &*/)> in_reversed_transition_callback
+  )
+  : in_forward_transition_callback_(in_forward_transition_callback),
+    in_reversed_transition_callback_(in_reversed_transition_callback)
+  {}
+  ~TransitionStep() = default;
 
+  bool CallForwardCallback(/*const T & param*/) const;
+  // {
+  //   return in_forward_transition_callback_(/*param*/);
+  // }
+  bool CallReversedCallback(/*const T & param*/) const;
+  // {
+  //   return in_reversed_transition_callback_(/*param*/);
+  // }
 
+private:
+  std::function<bool(/*const T &*/)> in_forward_transition_callback_;
+  std::function<bool(/*const T &*/)> in_reversed_transition_callback_;
 };
 } // namespace kroshu_ros2_core
 

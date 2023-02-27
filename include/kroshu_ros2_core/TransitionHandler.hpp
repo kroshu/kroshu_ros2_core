@@ -15,19 +15,12 @@
 #define KROSHU_ROS2_CORE__TRANSITION_HANDLER_HPP_
 
 #include "TransitionStep.hpp"
-
 #include <vector>
 
 namespace kroshu_ros2_core
 {
 class TransitionHandler
 {
-private:
-  /*
-  *  The vector that contains the registrated steps, and the bool value that contains if the step i already done
-  */
-  std::vector<std::pair<kroshu_ros2_core::TransitionStep, bool>> transition_steps_;
-
 public:
   TransitionHandler(/* args */);
   ~TransitionHandler();
@@ -35,6 +28,12 @@ public:
   bool MakeTransition();
   bool ReverseTransition();
   bool RegisterTransitionStep();
+
+private:
+  /*
+  *  The vector that contains the registrated steps, and the bool value that contains if the step is already done
+  */
+  std::vector<std::pair<kroshu_ros2_core::TransitionStep, bool>> transition_steps_;
 };
 
 
