@@ -16,12 +16,41 @@
 
 namespace kroshu_ros2_core
 {
-TransitionHandler::TransitionHandler(/* args */)
+TransitionHandler::TransitionHandler()
 {
 }
 
-TransitionHandler::~TransitionHandler()
+bool TransitionHandler::MakeTransition()
 {
+  if (!transition_steps_.empty()) {
+    for (auto && step : transition_steps_) {
+      if (step.first.CallForwardCallback()) {
+        step.second = true;
+      } else {
+        return false;
+      }
+    }
+
+  } else {
+    // Warnings transition steps empty create log message
+  }
+  return true;
+}
+
+bool TransitionHandler::ReverseTransition()
+{
+
+}
+
+bool TransitionHandler::RegisterTransitionStep(
+  std::function<bool()> in_forward_transition_callback,
+  std::function<bool()> in_reversed_transition_callback)
+{
+  transition_steps_.emplace_back(
+    std::make_pair<kroshu_ros2_core::TransitionStep, bool>(
+      kroshu_ros2_core::TransitionStep(
+        in_forward_transition_callback,
+        in_reversed_transition_callback), false));
 }
 
 } // namespace kroshu_ros2_core

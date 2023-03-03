@@ -22,17 +22,18 @@ namespace kroshu_ros2_core
 class TransitionHandler
 {
 public:
-  TransitionHandler(/* args */);
-  ~TransitionHandler();
+  TransitionHandler();
+  ~TransitionHandler() = default;
 
   bool MakeTransition();
   bool ReverseTransition();
-  bool RegisterTransitionStep();
+  bool RegisterTransitionStep(
+    std::function<bool()> in_forward_transition_callback,
+    std::function<bool()> in_reversed_transition_callback
+  );
 
 private:
-  /*
-  *  The vector that contains the registrated steps, and the bool value that contains if the step is already done
-  */
+  // The vector that contains the registrated steps, and the bool value that contains if the step is already done
   std::vector<std::pair<kroshu_ros2_core::TransitionStep, bool>> transition_steps_;
 };
 
