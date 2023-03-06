@@ -14,6 +14,8 @@
 
 #include "TransitionHandler.hpp"
 
+#include <boost/range/adaptor/reversed.hpp>
+
 namespace kroshu_ros2_core
 {
 TransitionHandler::TransitionHandler()
@@ -22,24 +24,53 @@ TransitionHandler::TransitionHandler()
 
 bool TransitionHandler::MakeTransition()
 {
+  // Check if there is any transition step registerd
   if (!transition_steps_.empty()) {
+
+    // Loop throught the transition steps
     for (auto && step : transition_steps_) {
+
+      // Checks the transition if the step is already done returns with warning
+      if (step.second == true) {
+        //TODO (Komaromi): (write warning) already or partly done transition
+        return true;
+      }
+
+      // Call and check the return value on the forward callback
       if (step.first.CallForwardCallback()) {
+        // Register if the step was successful
         step.second = true;
       } else {
+        // Call the Reverse transition funcion to reverse every step and return the function
+        ReverseTransition();
         return false;
       }
     }
 
   } else {
-    // Warnings transition steps empty create log message
+    //TODO (Komaromi): (Write warning) transition steps empty create log message
   }
   return true;
 }
 
 bool TransitionHandler::ReverseTransition()
 {
+  if (!transition_steps_.empty()) {
 
+    for (auto && step : boost::adaptors::reverse(transition_steps_)) {
+      if (step.second == true) {
+
+        if (step.first.CallReversedCallback()) {
+          step.second = false;
+        } else {
+          throw "error";
+        }
+      }
+    }
+  } else {
+    //TODO (Komaromi): (Write warning) transition steps empty create log message
+  }
+  return true;
 }
 
 bool TransitionHandler::RegisterTransitionStep(
