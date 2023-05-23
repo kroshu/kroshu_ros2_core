@@ -24,14 +24,13 @@ add_library(kroshu_ros2_core SHARED
   src/ROS2BaseNode.cpp
   src/ROS2BaseLCNode.cpp
   src/ParameterHandler.cpp
+  src/ControllerHandler.cpp
 )
 ament_target_dependencies(kroshu_ros2_core rclcpp rclcpp_lifecycle lifecycle_msgs)
 
 ament_export_targets(export_kroshu_ros2_core HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp rclcpp_lifecycle lifecycle_msgs)
 ament_export_libraries(${PROJECT_NAME})
-
-
 
 add_library(communication_helpers SHARED
   include/communication_helpers/serialization.hpp
@@ -47,11 +46,11 @@ install(DIRECTORY include/${PROJECT_NAME}/
 )
 
 install(TARGETS kroshu_ros2_core
-    EXPORT export_kroshu_ros2_core
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include)
+  EXPORT export_kroshu_ros2_core
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include)
 
 install(DIRECTORY include/communication_helpers DESTINATION include)
 install(
@@ -94,13 +93,12 @@ if(NOT ${SONARQUBE_PACKAGES_FILE} MATCHES "none")
 endif()
 
 if(TEST_COVERAGE)
-    set(CMAKE_BUILD_TYPE Debug)
-    list(APPEND CMAKE_MODULE_PATH "/usr/lib/cmake/CodeCoverage")
-    include(CodeCoverage)
-    append_coverage_compiler_flags()
-    set_coverage_output_dir()
+  set(CMAKE_BUILD_TYPE Debug)
+  list(APPEND CMAKE_MODULE_PATH "/usr/lib/cmake/CodeCoverage")
+  include(CodeCoverage)
+  append_coverage_compiler_flags()
+  set_coverage_output_dir()
 endif()
 
 if(TEST_COVERAGE)
-
 endif()

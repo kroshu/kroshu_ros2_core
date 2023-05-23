@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "kroshu_ros2_core/controller_handler.hpp"
+#include "kroshu_ros2_core/ControllerHandler.hpp"
 
 namespace kroshu_ros2_core
 {

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef KROSHU_ROS2_CORE__CONTROLLER_HANDLER_HPP_
-#define KROSHU_ROS2_CORE__CONTROLLER_HANDLER_HPP_
+#ifndef KROSHU_ROS2_CORE__CONTROLLERHANDLER_HPP_
+#define KROSHU_ROS2_CORE__CONTROLLERHANDLER_HPP_
 
 #include <string>
 #include <vector>
@@ -177,4 +177,4 @@ public:
 } // namespace kroshu_ros2_core
 
 
-#endif  // KROSHU_ROS2_CORE__CONTROLLER_HANDLER_HPP_
+#endif  // KROSHU_ROS2_CORE__CONTROLLERHANDLER_HPP_
