@@ -32,7 +32,7 @@ namespace kroshu_ros2_core
  *  - ApproveControllerActivation()
  *  - ApproveControllerDeactivation()
  */
-class Controller_handler
+class ControllerHandler
 {
 public:
   /**
@@ -116,12 +116,12 @@ public:
    *
    * @param fixed_controllers: Controller names thats have to active at any control mode
    */
-  Controller_handler(std::vector<std::string> fixed_controllers);
+  ControllerHandler(std::vector<std::string> fixed_controllers);
 
   /**
    * @brief Destroy the control mode handler object
    */
-  ~Controller_handler() = default;
+  ~ControllerHandler() = default;
 
   /**
    * @brief Updates the controllers name for a specific controller type.

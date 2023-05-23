@@ -16,8 +16,9 @@
 
 namespace kroshu_ros2_core
 {
-Controller_handler::Controller_handler(std::vector<std::string> fixed_controllers)
-: fixed_controllers_(fixed_controllers)
+ControllerHandler::ControllerHandler(std::vector<std::string> fixed_controllers)
+: fixed_controllers_(fixed_controllers), active_controllers_(), activate_controllers_(),
+  deactivate_controllers_()
 {
   control_mode_map_.emplace(
     std::make_pair(
@@ -45,8 +46,8 @@ Controller_handler::Controller_handler(std::vector<std::string> fixed_controller
       std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
 }
 
-bool Controller_handler::Update_controller_name(
-  const Controller_handler::Controller_type controller_type,
+bool ControllerHandler::Update_controller_name(
+  const ControllerHandler::Controller_type controller_type,
   const std::string & controller_name)
 {
   switch (controller_type) {
@@ -89,7 +90,7 @@ bool Controller_handler::Update_controller_name(
 }
 
 std::pair<std::vector<std::string>, std::vector<std::string>>
-Controller_handler::Get_activate_deactivate_controllers(int new_control_mode)
+ControllerHandler::Get_activate_deactivate_controllers(int new_control_mode)
 {
   if (control_mode_map_.find(control_mode(new_control_mode)) == control_mode_map_.end()) {
     // Not valid control mode, threw error
@@ -103,6 +104,9 @@ Controller_handler::Get_activate_deactivate_controllers(int new_control_mode)
 
   // Set controllers wich should be activated and deactivated
   activate_controllers_ = control_mode_map_.at(control_mode(new_control_mode));
+  for (auto && controller : fixed_controllers_) {
+    activate_controllers_.emplace_back(controller);
+  }
   deactivate_controllers_ = get_active_controllers();
 
   // Goes through every controllers that should be deactivated
@@ -129,19 +133,19 @@ Controller_handler::Get_activate_deactivate_controllers(int new_control_mode)
 }
 
 std::pair<std::vector<std::string>,
-  std::vector<std::string>> Controller_handler::Get_active_controllers_on_deactivation()
+  std::vector<std::string>> ControllerHandler::Get_active_controllers_on_deactivation()
 {
   activate_controllers_ = {};
   deactivate_controllers_ = get_active_controllers();
   return std::make_pair(activate_controllers_, deactivate_controllers_);
 }
 
-std::vector<std::string> Controller_handler::get_active_controllers()
+std::vector<std::string> ControllerHandler::get_active_controllers()
 {
   return std::vector<std::string>(active_controllers_.begin(), active_controllers_.end());
 }
 
-void Controller_handler::ApproveControllerActivation()
+void ControllerHandler::ApproveControllerActivation()
 {
   if (activate_controllers_.size() > 0) {
     std::copy(
@@ -150,7 +154,7 @@ void Controller_handler::ApproveControllerActivation()
   }
 }
 
-void Controller_handler::ApproveControllerDeactivation()
+void ControllerHandler::ApproveControllerDeactivation()
 {
   if (deactivate_controllers_.size() > 0) {
     for (auto && controller : deactivate_controllers_) {
