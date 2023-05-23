@@ -22,63 +22,63 @@ ControllerHandler::ControllerHandler(std::vector<std::string> fixed_controllers)
 {
   control_mode_map_.emplace(
     std::make_pair(
-      control_mode::POSITION_CONTROL_MODE,
+      ControlMode::POSITION_CONTROL_MODE,
       std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
   control_mode_map_.emplace(
     std::make_pair(
-      control_mode::CARTESIAN_POSITION_CONTROL_MODE,
+      ControlMode::CARTESIAN_POSITION_CONTROL_MODE,
       std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
   control_mode_map_.emplace(
     std::make_pair(
-      control_mode::IMPEDANCE_CONTROL_MODE,
+      ControlMode::IMPEDANCE_CONTROL_MODE,
       std::vector<std::string>(IMPEDANCE_MODE_CONTROLLERS_SIZE)));
   control_mode_map_.emplace(
     std::make_pair(
-      control_mode::CARTESIAN_IMPEDANCE_CONTROL_MODE,
+      ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE,
       std::vector<std::string>(IMPEDANCE_MODE_CONTROLLERS_SIZE)));
   control_mode_map_.emplace(
     std::make_pair(
-      control_mode::TORQUE_CONTROL_MODE,
+      ControlMode::TORQUE_CONTROL_MODE,
       std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
   control_mode_map_.emplace(
     std::make_pair(
-      control_mode::WRENCH_CONTROL_MODE,
+      ControlMode::WRENCH_CONTROL_MODE,
       std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
 }
 
-bool ControllerHandler::Update_controller_name(
-  const ControllerHandler::Controller_type controller_type,
+bool ControllerHandler::UpdateControllerName(
+  const ControllerHandler::ControllerType controller_type,
   const std::string & controller_name)
 {
   switch (controller_type) {
-    case Controller_type::POSITION_CONTROLLER_TYPE:
-      control_mode_map_.at(control_mode::POSITION_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
+    case ControllerType::POSITION_CONTROLLER_TYPE:
+      control_mode_map_.at(ControlMode::POSITION_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
         controller_name;
-      control_mode_map_.at(control_mode::IMPEDANCE_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
+      control_mode_map_.at(ControlMode::IMPEDANCE_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
         controller_name;
       break;
-    case Controller_type::CARTESIAN_POSITION_CONTROLLER_TYPE:
-      control_mode_map_.at(control_mode::CARTESIAN_POSITION_CONTROL_MODE).at(NORMAL_CONTROLLER_POS)
+    case ControllerType::CARTESIAN_POSITION_CONTROLLER_TYPE:
+      control_mode_map_.at(ControlMode::CARTESIAN_POSITION_CONTROL_MODE).at(NORMAL_CONTROLLER_POS)
         =
         controller_name;
-      control_mode_map_.at(control_mode::CARTESIAN_IMPEDANCE_CONTROL_MODE).at(NORMAL_CONTROLLER_POS)
+      control_mode_map_.at(ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE).at(NORMAL_CONTROLLER_POS)
         =
         controller_name;
       break;
-    case Controller_type::IMPEDANCE_CONTROLLER_TYPE:
-      control_mode_map_.at(control_mode::IMPEDANCE_CONTROL_MODE).at(IMPEDANCE_CONTROLLER_POS) =
+    case ControllerType::IMPEDANCE_CONTROLLER_TYPE:
+      control_mode_map_.at(ControlMode::IMPEDANCE_CONTROL_MODE).at(IMPEDANCE_CONTROLLER_POS) =
         controller_name;
       break;
-    case Controller_type::CARTESIAN_IMPEDANCE_CONTROLLER_TYPE:
-      control_mode_map_.at(control_mode::CARTESIAN_IMPEDANCE_CONTROL_MODE).at(
+    case ControllerType::CARTESIAN_IMPEDANCE_CONTROLLER_TYPE:
+      control_mode_map_.at(ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE).at(
         IMPEDANCE_CONTROLLER_POS) = controller_name;
       break;
-    case Controller_type::TORQUE_CONTROLLER_TYPE:
-      control_mode_map_.at(control_mode::TORQUE_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
+    case ControllerType::TORQUE_CONTROLLER_TYPE:
+      control_mode_map_.at(ControlMode::TORQUE_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
         controller_name;
       break;
-    case Controller_type::WRENCH_CONTROLLER_TYPE:
-      control_mode_map_.at(control_mode::WRENCH_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
+    case ControllerType::WRENCH_CONTROLLER_TYPE:
+      control_mode_map_.at(ControlMode::WRENCH_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
         controller_name;
       break;
     default:
@@ -92,22 +92,22 @@ bool ControllerHandler::Update_controller_name(
 std::pair<std::vector<std::string>, std::vector<std::string>>
 ControllerHandler::Get_activate_deactivate_controllers(int new_control_mode)
 {
-  if (control_mode_map_.find(control_mode(new_control_mode)) == control_mode_map_.end()) {
+  if (control_mode_map_.find(ControlMode(new_control_mode)) == control_mode_map_.end()) {
     // Not valid control mode, threw error
     throw std::out_of_range("Atribute new_control_mode is out of range");
   }
 
   // TODO (komaromi): Implement case for UNSPECIFIED CONTROL MODE
-  if (control_mode(new_control_mode) == control_mode::UNSPECIFIED_CONTROL_MODE) {
+  if (ControlMode(new_control_mode) == ControlMode::UNSPECIFIED_CONTROL_MODE) {
     throw std::logic_error("Not implemented exepton");
   }
 
   // Set controllers wich should be activated and deactivated
-  activate_controllers_ = control_mode_map_.at(control_mode(new_control_mode));
+  activate_controllers_ = control_mode_map_.at(ControlMode(new_control_mode));
   for (auto && controller : fixed_controllers_) {
     activate_controllers_.emplace_back(controller);
   }
-  deactivate_controllers_ = get_active_controllers();
+  deactivate_controllers_ = getActiveControllers();
 
   // Goes through every controllers that should be deactivated
   for (auto deactivate_controllers_it = deactivate_controllers_.begin();
@@ -128,19 +128,16 @@ ControllerHandler::Get_activate_deactivate_controllers(int new_control_mode)
       }
     }
   }
-  // TODO (komaromi): Somewhere the active_controllers have to be updated, unless it wont work.
   return std::make_pair(activate_controllers_, deactivate_controllers_);
 }
 
-std::pair<std::vector<std::string>,
-  std::vector<std::string>> ControllerHandler::Get_active_controllers_on_deactivation()
+std::vector<std::string> ControllerHandler::GetControllersForDeactivation()
 {
-  activate_controllers_ = {};
-  deactivate_controllers_ = get_active_controllers();
-  return std::make_pair(activate_controllers_, deactivate_controllers_);
+  deactivate_controllers_ = getActiveControllers();
+  return deactivate_controllers_;
 }
 
-std::vector<std::string> ControllerHandler::get_active_controllers()
+std::vector<std::string> ControllerHandler::getActiveControllers()
 {
   return std::vector<std::string>(active_controllers_.begin(), active_controllers_.end());
 }
@@ -151,6 +148,7 @@ void ControllerHandler::ApproveControllerActivation()
     std::copy(
       activate_controllers_.begin(), activate_controllers_.end(),
       std::inserter(active_controllers_, active_controllers_.end()));
+    activate_controllers_.clear();
   }
 }
 
@@ -160,6 +158,7 @@ void ControllerHandler::ApproveControllerDeactivation()
     for (auto && controller : deactivate_controllers_) {
       active_controllers_.erase(active_controllers_.find(controller));
     }
+    deactivate_controllers_.clear();
   }
 }
 }   // namespace kroshu_ros2_core

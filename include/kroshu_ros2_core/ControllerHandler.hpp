@@ -46,7 +46,7 @@ public:
     CARTESIAN_IMPEDANCE_CONTROLLER_TYPE = 3,
     TORQUE_CONTROLLER_TYPE = 4,
     WRENCH_CONTROLLER_TYPE = 5
-  } Controller_type;
+  } ControllerType;
 
 private:
   /**
@@ -61,7 +61,7 @@ private:
     CARTESIAN_IMPEDANCE_CONTROL_MODE = 4,
     TORQUE_CONTROL_MODE = 5,
     WRENCH_CONTROL_MODE = 6
-  } control_mode;
+  } ControlMode;
 
   /**
    * @brief Controller names thats have to active at any control mode
@@ -87,7 +87,7 @@ private:
   /**
    * @brief Look up table for wich controllers needed for each control mode
    */
-  std::map<control_mode, std::vector<std::string>> control_mode_map_;
+  std::map<ControlMode, std::vector<std::string>> control_mode_map_;
 
   /**
    * @brief There are two kinds of control modes with different number of necessary interfaces to be set:
@@ -108,7 +108,7 @@ private:
    *
    * @return std::vector<std::string>: The currently active controllers
    */
-  std::vector<std::string> get_active_controllers();
+  std::vector<std::string> getActiveControllers();
 
 public:
   /**
@@ -131,8 +131,8 @@ public:
    * @return True, if update was succesfull.
    * @return False, if update failed.
    */
-  bool Update_controller_name(
-    const Controller_type controller_type,
+  bool UpdateControllerName(
+    const ControllerType controller_type,
     const std::string & controller_name);
 
   /**
@@ -150,11 +150,9 @@ public:
   /**
    * @brief Returns all controllers that has active state while deactivation
    *
-   * @return std::pair<std::vector<std::string>, std::vector<std::string>>:
-   * Two vectors, first has the contrllers to activate, second has the controllers to deactivate
+   * @return std::vector<std::string>: Vector that cotains controller for final deactivation
    */
-  std::pair<std::vector<std::string>,
-    std::vector<std::string>> Get_active_controllers_on_deactivation();
+  std::vector<std::string> GetControllersForDeactivation();
 
   /**
    * @brief Approves that the controller activation was succesfull
@@ -167,12 +165,6 @@ public:
    *
    */
   void ApproveControllerDeactivation();
-
-  /**
-   * @brief Clears the controller switch action
-   *
-   */
-  void RejectControllerSwitch();
 };
 } // namespace kroshu_ros2_core
 
