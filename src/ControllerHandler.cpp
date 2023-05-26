@@ -143,7 +143,7 @@ std::vector<std::string> ControllerHandler::getActiveControllers()
 
 void ControllerHandler::ApproveControllerActivation()
 {
-  if (activate_controllers_.size() > 0) {
+  if (!activate_controllers_.empty()) {
     std::copy(
       activate_controllers_.begin(), activate_controllers_.end(),
       std::inserter(active_controllers_, active_controllers_.end()));
@@ -153,7 +153,7 @@ void ControllerHandler::ApproveControllerActivation()
 
 void ControllerHandler::ApproveControllerDeactivation()
 {
-  if (deactivate_controllers_.size() > 0) {
+  if (!deactivate_controllers_.empty()) {
     for (auto && controller : deactivate_controllers_) {
       active_controllers_.erase(active_controllers_.find(controller));
     }
