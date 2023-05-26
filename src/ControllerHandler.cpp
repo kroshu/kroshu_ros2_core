@@ -47,12 +47,10 @@ bool ControllerHandler::UpdateControllerName(
         controller_name;
       break;
     case ControllerType::CARTESIAN_POSITION_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::CARTESIAN_POSITION_CONTROL_MODE).at(STANDARD_CONTROLLER_POS)
-        =
-        controller_name;
-      control_mode_map_.at(ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE).at(STANDARD_CONTROLLER_POS)
-        =
-        controller_name;
+      control_mode_map_.at(ControlMode::CARTESIAN_POSITION_CONTROL_MODE)
+      .at(STANDARD_CONTROLLER_POS) = controller_name;
+      control_mode_map_.at(ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE)
+      .at(STANDARD_CONTROLLER_POS) = controller_name;
       break;
     case ControllerType::JOINT_IMPEDANCE_CONTROLLER_TYPE:
       control_mode_map_.at(ControlMode::JOINT_IMPEDANCE_CONTROL_MODE).at(IMPEDANCE_CONTROLLER_POS) =

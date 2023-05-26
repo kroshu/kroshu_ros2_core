@@ -17,6 +17,8 @@
 
 #include <string>
 #include <vector>
+#include <map>
+#include <utility>
 #include <set>
 
 #include "rclcpp/rclcpp.hpp"
@@ -166,7 +168,7 @@ public:
    */
   void ApproveControllerDeactivation();
 };
-} // namespace kroshu_ros2_core
+}  // namespace kroshu_ros2_core
 
 
 #endif  // KROSHU_ROS2_CORE__CONTROLLERHANDLER_HPP_
