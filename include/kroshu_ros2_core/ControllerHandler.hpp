@@ -40,9 +40,9 @@ public:
    */
   typedef enum   //controller_type
   {
-    POSITION_CONTROLLER_TYPE = 0,
+    JOINT_POSITION_CONTROLLER_TYPE = 0,
     CARTESIAN_POSITION_CONTROLLER_TYPE = 1,
-    IMPEDANCE_CONTROLLER_TYPE = 2,
+    JOINT_IMPEDANCE_CONTROLLER_TYPE = 2,
     CARTESIAN_IMPEDANCE_CONTROLLER_TYPE = 3,
     TORQUE_CONTROLLER_TYPE = 4,
     WRENCH_CONTROLLER_TYPE = 5
@@ -55,9 +55,9 @@ private:
   typedef enum
   {
     UNSPECIFIED_CONTROL_MODE = 0,
-    POSITION_CONTROL_MODE = 1,
+    JOINT_POSITION_CONTROL_MODE = 1,
     CARTESIAN_POSITION_CONTROL_MODE = 2,
-    IMPEDANCE_CONTROL_MODE = 3,
+    JOINT_IMPEDANCE_CONTROL_MODE = 3,
     CARTESIAN_IMPEDANCE_CONTROL_MODE = 4,
     TORQUE_CONTROL_MODE = 5,
     WRENCH_CONTROL_MODE = 6
@@ -85,13 +85,13 @@ private:
   std::vector<std::string> deactivate_controllers_;
 
   /**
-   * @brief Look up table for wich controllers needed for each control mode
+   * @brief Look up table for which controllers needed for each control mode
    */
   std::map<ControlMode, std::vector<std::string>> control_mode_map_;
 
   /**
    * @brief There are two kinds of control modes with different number of necessary interfaces to be set:
-   *  - in standard mode (possition, torque), only the control sgnal to the used interface
+   *  - in standard mode (possition, torque), only the control signal to the used interface
    *  - in impedance modes, the setpoint and the parameters describing the behavior
    */
   static constexpr int STANDARD_MODE_CONTROLLERS_SIZE = 1;
@@ -100,7 +100,7 @@ private:
   /**
    * @brief Controllers possition in the controllers vector
    */
-  static constexpr int NORMAL_CONTROLLER_POS = 0;
+  static constexpr int STANDARD_CONTROLLER_POS = 0;
   static constexpr int IMPEDANCE_CONTROLLER_POS = 1;
 
   /**
@@ -114,7 +114,7 @@ public:
   /**
    * @brief Construct a new control mode handler object
    *
-   * @param fixed_controllers: Controller names thats have to active at any control mode
+   * @param fixed_controllers: Controllers thats have to active at any control mode
    */
   ControllerHandler(std::vector<std::string> fixed_controllers);
 
@@ -140,11 +140,11 @@ public:
    *
    * @param new_control_mode: The new control mode. It is based on Controller_handler::control_mode enum.
    * @return std::pair<std::vector<std::string>, std::vector<std::string>>:
-   * Two vectors, first has the contrllers to activate, second has the controllers to deactivate
+   * Two vectors, first has the controllers to activate, second has the controllers to deactivate
    * @exception std::out_of_range: No control mode for the actual new_control_mode atribute.
    */
   std::pair<std::vector<std::string>,
-    std::vector<std::string>> Get_activate_deactivate_controllers(
+    std::vector<std::string>> GetControllersForSwitch(
     int new_control_mode);
 
   /**

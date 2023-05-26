@@ -17,12 +17,11 @@
 namespace kroshu_ros2_core
 {
 ControllerHandler::ControllerHandler(std::vector<std::string> fixed_controllers)
-: fixed_controllers_(fixed_controllers), active_controllers_(), activate_controllers_(),
-  deactivate_controllers_()
+: fixed_controllers_(fixed_controllers)
 {
   control_mode_map_.emplace(
     std::make_pair(
-      ControlMode::POSITION_CONTROL_MODE,
+      ControlMode::JOINT_POSITION_CONTROL_MODE,
       std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
   control_mode_map_.emplace(
     std::make_pair(
@@ -30,7 +29,7 @@ ControllerHandler::ControllerHandler(std::vector<std::string> fixed_controllers)
       std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
   control_mode_map_.emplace(
     std::make_pair(
-      ControlMode::IMPEDANCE_CONTROL_MODE,
+      ControlMode::JOINT_IMPEDANCE_CONTROL_MODE,
       std::vector<std::string>(IMPEDANCE_MODE_CONTROLLERS_SIZE)));
   control_mode_map_.emplace(
     std::make_pair(
@@ -51,22 +50,22 @@ bool ControllerHandler::UpdateControllerName(
   const std::string & controller_name)
 {
   switch (controller_type) {
-    case ControllerType::POSITION_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::POSITION_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
+    case ControllerType::JOINT_POSITION_CONTROLLER_TYPE:
+      control_mode_map_.at(ControlMode::JOINT_POSITION_CONTROL_MODE).at(STANDARD_CONTROLLER_POS) =
         controller_name;
-      control_mode_map_.at(ControlMode::IMPEDANCE_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
+      control_mode_map_.at(ControlMode::JOINT_IMPEDANCE_CONTROL_MODE).at(STANDARD_CONTROLLER_POS) =
         controller_name;
       break;
     case ControllerType::CARTESIAN_POSITION_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::CARTESIAN_POSITION_CONTROL_MODE).at(NORMAL_CONTROLLER_POS)
+      control_mode_map_.at(ControlMode::CARTESIAN_POSITION_CONTROL_MODE).at(STANDARD_CONTROLLER_POS)
         =
         controller_name;
-      control_mode_map_.at(ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE).at(NORMAL_CONTROLLER_POS)
+      control_mode_map_.at(ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE).at(STANDARD_CONTROLLER_POS)
         =
         controller_name;
       break;
-    case ControllerType::IMPEDANCE_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::IMPEDANCE_CONTROL_MODE).at(IMPEDANCE_CONTROLLER_POS) =
+    case ControllerType::JOINT_IMPEDANCE_CONTROLLER_TYPE:
+      control_mode_map_.at(ControlMode::JOINT_IMPEDANCE_CONTROL_MODE).at(IMPEDANCE_CONTROLLER_POS) =
         controller_name;
       break;
     case ControllerType::CARTESIAN_IMPEDANCE_CONTROLLER_TYPE:
@@ -74,11 +73,11 @@ bool ControllerHandler::UpdateControllerName(
         IMPEDANCE_CONTROLLER_POS) = controller_name;
       break;
     case ControllerType::TORQUE_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::TORQUE_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
+      control_mode_map_.at(ControlMode::TORQUE_CONTROL_MODE).at(STANDARD_CONTROLLER_POS) =
         controller_name;
       break;
     case ControllerType::WRENCH_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::WRENCH_CONTROL_MODE).at(NORMAL_CONTROLLER_POS) =
+      control_mode_map_.at(ControlMode::WRENCH_CONTROL_MODE).at(STANDARD_CONTROLLER_POS) =
         controller_name;
       break;
     default:
@@ -90,7 +89,7 @@ bool ControllerHandler::UpdateControllerName(
 }
 
 std::pair<std::vector<std::string>, std::vector<std::string>>
-ControllerHandler::Get_activate_deactivate_controllers(int new_control_mode)
+ControllerHandler::GetControllersForSwitch(int new_control_mode)
 {
   if (control_mode_map_.find(ControlMode(new_control_mode)) == control_mode_map_.end()) {
     // Not valid control mode, threw error
@@ -99,7 +98,7 @@ ControllerHandler::Get_activate_deactivate_controllers(int new_control_mode)
 
   // TODO (komaromi): Implement case for UNSPECIFIED CONTROL MODE
   if (ControlMode(new_control_mode) == ControlMode::UNSPECIFIED_CONTROL_MODE) {
-    throw std::logic_error("Not implemented exepton");
+    throw std::logic_error("UNSPECIFIED_CONTROL_MODE is not valid control mode");
   }
 
   // Set controllers wich should be activated and deactivated
