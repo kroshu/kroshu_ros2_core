@@ -19,30 +19,20 @@ namespace kroshu_ros2_core
 ControllerHandler::ControllerHandler(std::vector<std::string> fixed_controllers)
 : fixed_controllers_(fixed_controllers)
 {
-  control_mode_map_.emplace(
-    std::make_pair(
-      ControlMode::JOINT_POSITION_CONTROL_MODE,
-      std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
-  control_mode_map_.emplace(
-    std::make_pair(
-      ControlMode::CARTESIAN_POSITION_CONTROL_MODE,
-      std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
-  control_mode_map_.emplace(
-    std::make_pair(
-      ControlMode::JOINT_IMPEDANCE_CONTROL_MODE,
-      std::vector<std::string>(IMPEDANCE_MODE_CONTROLLERS_SIZE)));
-  control_mode_map_.emplace(
-    std::make_pair(
-      ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE,
-      std::vector<std::string>(IMPEDANCE_MODE_CONTROLLERS_SIZE)));
-  control_mode_map_.emplace(
-    std::make_pair(
-      ControlMode::TORQUE_CONTROL_MODE,
-      std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
-  control_mode_map_.emplace(
-    std::make_pair(
-      ControlMode::WRENCH_CONTROL_MODE,
-      std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)));
+  control_mode_map_ = {
+    {ControlMode::JOINT_POSITION_CONTROL_MODE,
+      std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)},
+    {ControlMode::CARTESIAN_POSITION_CONTROL_MODE,
+      std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)},
+    {ControlMode::CARTESIAN_POSITION_CONTROL_MODE,
+      std::vector<std::string>(IMPEDANCE_MODE_CONTROLLERS_SIZE)},
+    {ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE,
+      std::vector<std::string>(IMPEDANCE_MODE_CONTROLLERS_SIZE)},
+    {ControlMode::TORQUE_CONTROL_MODE,
+      std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)},
+    {ControlMode::WRENCH_CONTROL_MODE,
+      std::vector<std::string>(STANDARD_MODE_CONTROLLERS_SIZE)}
+  };
 }
 
 bool ControllerHandler::UpdateControllerName(
@@ -92,11 +82,10 @@ std::pair<std::vector<std::string>, std::vector<std::string>>
 ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_control_mode)
 {
   if (control_mode_map_.find(ControlMode(new_control_mode)) == control_mode_map_.end()) {
-    // Not valid control mode, threw error
+    // Not valid control mode, through error
     throw std::out_of_range("Atribute new_control_mode is out of range");
   }
 
-  // TODO (komaromi): Implement case for UNSPECIFIED CONTROL MODE
   if (ControlMode(new_control_mode) == ControlMode::UNSPECIFIED_CONTROL_MODE) {
     throw std::logic_error("UNSPECIFIED_CONTROL_MODE is not valid control mode");
   }
