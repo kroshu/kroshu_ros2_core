@@ -48,10 +48,9 @@ public:
     WRENCH_CONTROLLER_TYPE = 5
   } ControllerType;
 
-private:
   /**
-   * @brief Enum for identify every control mode
-   */
+  * @brief Enum for identify every control mode
+  */
   typedef enum
   {
     UNSPECIFIED_CONTROL_MODE = 0,
@@ -62,6 +61,21 @@ private:
     TORQUE_CONTROL_MODE = 5,
     WRENCH_CONTROL_MODE = 6
   } ControlMode;
+
+private:
+  /**
+   * @brief There are two kinds of control modes with different number of necessary interfaces to be set:
+   *  - in standard mode (possition, torque), only the control signal to the used interface
+   *  - in impedance modes, the setpoint and the parameters describing the behavior
+   */
+  static constexpr int STANDARD_MODE_CONTROLLERS_SIZE = 1;
+  static constexpr int IMPEDANCE_MODE_CONTROLLERS_SIZE = 2;
+
+  /**
+   * @brief Controllers possition in the controllers vector
+   */
+  static constexpr int STANDARD_CONTROLLER_POS = 0;
+  static constexpr int IMPEDANCE_CONTROLLER_POS = 1;
 
   /**
    * @brief Controller names thats have to active at any control mode
@@ -88,20 +102,6 @@ private:
    * @brief Look up table for which controllers needed for each control mode
    */
   std::map<ControlMode, std::vector<std::string>> control_mode_map_;
-
-  /**
-   * @brief There are two kinds of control modes with different number of necessary interfaces to be set:
-   *  - in standard mode (possition, torque), only the control signal to the used interface
-   *  - in impedance modes, the setpoint and the parameters describing the behavior
-   */
-  static constexpr int STANDARD_MODE_CONTROLLERS_SIZE = 1;
-  static constexpr int IMPEDANCE_MODE_CONTROLLERS_SIZE = 2;
-
-  /**
-   * @brief Controllers possition in the controllers vector
-   */
-  static constexpr int STANDARD_CONTROLLER_POS = 0;
-  static constexpr int IMPEDANCE_CONTROLLER_POS = 1;
 
   /**
    * @brief Retruns the currently active controllers for the user.
@@ -145,7 +145,7 @@ public:
    */
   std::pair<std::vector<std::string>,
     std::vector<std::string>> GetControllersForSwitch(
-    int new_control_mode);
+    ControllerHandler::ControlMode new_control_mode);
 
   /**
    * @brief Returns all controllers that has active state while deactivation

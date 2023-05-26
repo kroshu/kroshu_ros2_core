@@ -89,7 +89,7 @@ bool ControllerHandler::UpdateControllerName(
 }
 
 std::pair<std::vector<std::string>, std::vector<std::string>>
-ControllerHandler::GetControllersForSwitch(int new_control_mode)
+ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_control_mode)
 {
   if (control_mode_map_.find(ControlMode(new_control_mode)) == control_mode_map_.end()) {
     // Not valid control mode, threw error
