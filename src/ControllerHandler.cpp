@@ -93,27 +93,26 @@ ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_co
   for (auto && controller : fixed_controllers_) {
     activate_controllers_.emplace_back(controller);
   }
-  deactivate_controllers_ = getActiveControllers();
+  std::set<std::string> deactivate_temp = active_controllers_;
 
-  // Goes through every controllers that should be deactivated
-  for (auto deactivate_controllers_it = deactivate_controllers_.begin();
-    deactivate_controllers_it != deactivate_controllers_.end(); ++deactivate_controllers_it)
+
+  // Goes through every controllers that should be activated
+  for (auto activate_controllers_it = activate_controllers_.begin();
+    activate_controllers_it != activate_controllers_.end(); ++activate_controllers_it)
   {
-    // Goes through every controllers that should be activated
-    for (auto activate_controllers_it = activate_controllers_.begin();
-      activate_controllers_it != activate_controllers_.end(); ++activate_controllers_it)
-    {
-      if (*activate_controllers_it == *deactivate_controllers_it) {
-        // Delete those controllers wich not need to be activated or deactivated.
-        activate_controllers_.erase(activate_controllers_it);
-        deactivate_controllers_.erase(deactivate_controllers_it);
-        // Decrement iterators so it will not lose track;
-        --activate_controllers_it;
-        --deactivate_controllers_it;
-        break;
-      }
+    // Finds the controller in the deactivate controllers
+    if (deactivate_temp.find(*activate_controllers_it) == deactivate_temp.end()) {
+      // Delete those controllers wich not need to be activated or deactivated.
+      activate_controllers_.erase(activate_controllers_it);
+      deactivate_temp.erase(*activate_controllers_it);
+      // Decrement iterators so it will not lose track;
+      --activate_controllers_it;
     }
   }
+
+  deactivate_controllers_ =
+    std::vector<std::string>(deactivate_temp.begin(), deactivate_temp.end());
+
   return std::make_pair(activate_controllers_, deactivate_controllers_);
 }
 
