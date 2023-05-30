@@ -16,8 +16,8 @@
 
 namespace kroshu_ros2_core
 {
-ControllerHandler::ControllerHandler(std::set<std::string> fixed_controllers)
-: fixed_controllers_(fixed_controllers)
+ControllerHandler::ControllerHandler(std::vector<std::string> fixed_controllers)
+: fixed_controllers_(fixed_controllers.begin(), fixed_controllers.end())
 {
   control_mode_map_ = {
     {ControlMode::JOINT_POSITION_CONTROL_MODE,
@@ -91,9 +91,9 @@ ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_co
   // Set controllers wich should be activated and deactivated
   activate_controllers_.clear();
   auto control_mode_controllers = control_mode_map_.at(ControlMode(new_control_mode));
-  activate_controllers_.emplace(control_mode_controllers.standard_controller);
+  activate_controllers_.insert(control_mode_controllers.standard_controller);
   if (!control_mode_controllers.impadence_cotroller.empty()) {
-    activate_controllers_.emplace(control_mode_controllers.impadence_cotroller);
+    activate_controllers_.insert(control_mode_controllers.impadence_cotroller);
   }
 
   activate_controllers_.merge(fixed_controllers_);

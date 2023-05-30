@@ -112,20 +112,13 @@ private:
    */
   std::map<ControlMode, ControllerTypes> control_mode_map_;
 
-  /**
-   * @brief Retruns the currently active controllers for the user.
-   *
-   * @return std::vector<std::string>: The currently active controllers
-   */
-  std::vector<std::string> getActiveControllers();
-
 public:
   /**
    * @brief Construct a new control mode handler object
    *
    * @param fixed_controllers: Controllers thats have to active at any control mode
    */
-  ControllerHandler(std::set<std::string> fixed_controllers);
+  ControllerHandler(std::vector<std::string> fixed_controllers);
 
   /**
    * @brief Destroy the control mode handler object
