@@ -36,6 +36,7 @@ namespace kroshu_ros2_core
  */
 class ControllerHandler
 {
+
 public:
   /**
    * @brief Enum for identify every type of controllers
@@ -65,6 +66,12 @@ public:
   } ControlMode;
 
 private:
+  typedef struct
+  {
+    std::string standard_controller;
+    std::string impadence_cotroller;
+  } ControllerTypes;
+
   /**
    * @brief There are two kinds of control modes with different number of necessary interfaces to be set:
    *  - in standard mode (possition, torque), only the control signal to the used interface
@@ -82,7 +89,7 @@ private:
   /**
    * @brief Controller names thats have to active at any control mode
    */
-  std::vector<std::string> fixed_controllers_;
+  std::set<std::string> fixed_controllers_;
 
   /**
    * @brief The currently active controllers that not include the fixed controllers
@@ -93,17 +100,17 @@ private:
   /**
    * @brief These controllers will be activated after they get approved
    */
-  std::vector<std::string> activate_controllers_;
+  std::set<std::string> activate_controllers_;
 
   /**
    * @brief These controllers will be deactivated after they get approved
    */
-  std::vector<std::string> deactivate_controllers_;
+  std::set<std::string> deactivate_controllers_;
 
   /**
    * @brief Look up table for which controllers needed for each control mode
    */
-  std::map<ControlMode, std::vector<std::string>> control_mode_map_;
+  std::map<ControlMode, ControllerTypes> control_mode_map_;
 
   /**
    * @brief Retruns the currently active controllers for the user.
@@ -118,7 +125,7 @@ public:
    *
    * @param fixed_controllers: Controllers thats have to active at any control mode
    */
-  ControllerHandler(std::vector<std::string> fixed_controllers);
+  ControllerHandler(std::set<std::string> fixed_controllers);
 
   /**
    * @brief Destroy the control mode handler object
