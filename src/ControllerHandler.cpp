@@ -27,41 +27,47 @@ bool ControllerHandler::UpdateControllerName(
   const ControllerHandler::ControllerType controller_type,
   const std::string & controller_name)
 {
+  bool ret_val = false;
   switch (controller_type) {
     case ControllerType::JOINT_POSITION_CONTROLLER_TYPE:
       control_mode_map_[ControlMode::JOINT_POSITION_CONTROL_MODE].standard_controller =
         controller_name;
       control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL_MODE].standard_controller =
         controller_name;
+      ret_val = true;
       break;
     case ControllerType::CARTESIAN_POSITION_CONTROLLER_TYPE:
       control_mode_map_[ControlMode::CARTESIAN_POSITION_CONTROL_MODE].standard_controller =
         controller_name;
       control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE].standard_controller =
         controller_name;
+      ret_val = true;
       break;
     case ControllerType::JOINT_IMPEDANCE_CONTROLLER_TYPE:
       control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL_MODE].impedance_cotroller =
         controller_name;
+      ret_val = true;
       break;
     case ControllerType::CARTESIAN_IMPEDANCE_CONTROLLER_TYPE:
       control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE].impedance_cotroller =
         controller_name;
+      ret_val = true;
       break;
     case ControllerType::TORQUE_CONTROLLER_TYPE:
       control_mode_map_[ControlMode::TORQUE_CONTROL_MODE].standard_controller =
         controller_name;
+      ret_val = true;
       break;
     case ControllerType::WRENCH_CONTROLLER_TYPE:
       control_mode_map_[ControlMode::WRENCH_CONTROL_MODE].standard_controller =
         controller_name;
+      ret_val = true;
       break;
     default:
       RCLCPP_INFO(rclcpp::get_logger("ControllerHandler"), "Invalid Controller type");
-      return false;
       break;
   }
-  return true;
+  return ret_val;
 }
 
 std::pair<std::vector<std::string>, std::vector<std::string>>
