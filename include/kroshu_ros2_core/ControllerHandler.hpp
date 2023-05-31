@@ -36,12 +36,11 @@ namespace kroshu_ros2_core
  */
 class ControllerHandler
 {
-
 public:
   /**
    * @brief Enum for identify every type of controllers
    */
-  typedef enum   //controller_type
+  typedef enum // controller_type
   {
     JOINT_POSITION_CONTROLLER_TYPE = 0,
     CARTESIAN_POSITION_CONTROLLER_TYPE = 1,
@@ -104,7 +103,7 @@ public:
    *
    * @param fixed_controllers: Controllers thats have to active at any control mode
    */
-  ControllerHandler(std::vector<std::string> fixed_controllers);
+  explicit ControllerHandler(std::vector<std::string> fixed_controllers);
 
   /**
    * @brief Destroy the control mode handler object
