@@ -81,7 +81,7 @@ ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_co
     activate_controllers_.insert(control_mode_controllers.impedance_cotroller);
   }
 
-  activate_controllers_.merge(fixed_controllers_);
+  activate_controllers_.insert(fixed_controllers_.begin(), fixed_controllers_.end());
 
   deactivate_controllers_ = active_controllers_;
 
@@ -118,7 +118,7 @@ std::vector<std::string> ControllerHandler::GetControllersForDeactivation()
 void ControllerHandler::ApproveControllerActivation()
 {
   if (!activate_controllers_.empty()) {
-    active_controllers_.merge(activate_controllers_);
+    active_controllers_.insert(activate_controllers_.begin(), activate_controllers_.end());
     activate_controllers_.clear();
   }
 }
