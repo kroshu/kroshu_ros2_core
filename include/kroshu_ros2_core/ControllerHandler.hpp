@@ -40,7 +40,7 @@ public:
   /**
    * @brief Enum for identify every type of controllers
    */
-  typedef enum // controller_type
+  typedef enum  // controller_type
   {
     JOINT_POSITION_CONTROLLER_TYPE = 0,
     CARTESIAN_POSITION_CONTROLLER_TYPE = 1,
