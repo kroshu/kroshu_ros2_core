@@ -40,7 +40,7 @@ public:
   /**
    * @brief Enum for identify every type of controllers
    */
-  enum ControllerType
+  enum class ControllerType
   {
     JOINT_POSITION_CONTROLLER_TYPE = 0,
     CARTESIAN_POSITION_CONTROLLER_TYPE = 1,
@@ -53,7 +53,7 @@ public:
   /**
   * @brief Enum for identify every control mode
   */
-  enum ControlMode
+  enum class ControlMode
   {
     UNSPECIFIED_CONTROL_MODE = 0,
     JOINT_POSITION_CONTROL_MODE = 1,
