@@ -30,7 +30,7 @@ namespace kroshu_ros2_core
  *  and on control mode change offer the controllers name that
  *  need to be activated and deactivated.
  * The following three public function has to be called in the following order:
- *  - Calculate_activate_deactivate_controllers() or Get_active_controllers_on_deactivation()
+ *  - GetControllersForSwitch() or GetControllersForDeactivation()
  *  - ApproveControllerActivation()
  *  - ApproveControllerDeactivation()
  */
@@ -69,22 +69,8 @@ private:
   typedef struct
   {
     std::string standard_controller;
-    std::string impadence_cotroller;
+    std::string impedance_cotroller;
   } ControllerTypes;
-
-  /**
-   * @brief There are two kinds of control modes with different number of necessary interfaces to be set:
-   *  - in standard mode (possition, torque), only the control signal to the used interface
-   *  - in impedance modes, the setpoint and the parameters describing the behavior
-   */
-  static constexpr int STANDARD_MODE_CONTROLLERS_SIZE = 1;
-  static constexpr int IMPEDANCE_MODE_CONTROLLERS_SIZE = 2;
-
-  /**
-   * @brief Controllers possition in the controllers vector
-   */
-  static constexpr int STANDARD_CONTROLLER_POS = 0;
-  static constexpr int IMPEDANCE_CONTROLLER_POS = 1;
 
   /**
    * @brief Controller names thats have to active at any control mode

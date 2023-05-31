@@ -18,22 +18,7 @@ namespace kroshu_ros2_core
 {
 ControllerHandler::ControllerHandler(std::vector<std::string> fixed_controllers)
 : fixed_controllers_(fixed_controllers.begin(), fixed_controllers.end())
-{
-  control_mode_map_ = {
-    {ControlMode::JOINT_POSITION_CONTROL_MODE,
-      ControllerTypes()},
-    {ControlMode::CARTESIAN_POSITION_CONTROL_MODE,
-      ControllerTypes()},
-    {ControlMode::JOINT_IMPEDANCE_CONTROL_MODE,
-      ControllerTypes()},
-    {ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE,
-      ControllerTypes()},
-    {ControlMode::TORQUE_CONTROL_MODE,
-      ControllerTypes()},
-    {ControlMode::WRENCH_CONTROL_MODE,
-      ControllerTypes()}
-  };
-}
+{}
 
 bool ControllerHandler::UpdateControllerName(
   const ControllerHandler::ControllerType controller_type,
@@ -41,31 +26,31 @@ bool ControllerHandler::UpdateControllerName(
 {
   switch (controller_type) {
     case ControllerType::JOINT_POSITION_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::JOINT_POSITION_CONTROL_MODE).standard_controller =
+      control_mode_map_[ControlMode::JOINT_POSITION_CONTROL_MODE].standard_controller =
         controller_name;
-      control_mode_map_.at(ControlMode::JOINT_IMPEDANCE_CONTROL_MODE).standard_controller =
+      control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL_MODE].standard_controller =
         controller_name;
       break;
     case ControllerType::CARTESIAN_POSITION_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::CARTESIAN_POSITION_CONTROL_MODE).standard_controller =
+      control_mode_map_[ControlMode::CARTESIAN_POSITION_CONTROL_MODE].standard_controller =
         controller_name;
-      control_mode_map_.at(ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE).standard_controller =
+      control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE].standard_controller =
         controller_name;
       break;
     case ControllerType::JOINT_IMPEDANCE_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::JOINT_IMPEDANCE_CONTROL_MODE).impadence_cotroller =
+      control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL_MODE].impedance_cotroller =
         controller_name;
       break;
     case ControllerType::CARTESIAN_IMPEDANCE_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE).impadence_cotroller =
+      control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE].impedance_cotroller =
         controller_name;
       break;
     case ControllerType::TORQUE_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::TORQUE_CONTROL_MODE).standard_controller =
+      control_mode_map_[ControlMode::TORQUE_CONTROL_MODE].standard_controller =
         controller_name;
       break;
     case ControllerType::WRENCH_CONTROLLER_TYPE:
-      control_mode_map_.at(ControlMode::WRENCH_CONTROL_MODE).standard_controller =
+      control_mode_map_[ControlMode::WRENCH_CONTROL_MODE].standard_controller =
         controller_name;
       break;
     default:
@@ -81,7 +66,7 @@ ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_co
 {
   if (control_mode_map_.find(ControlMode(new_control_mode)) == control_mode_map_.end()) {
     // Not valid control mode, through error
-    throw std::out_of_range("Atribute new_control_mode is out of range");
+    throw std::out_of_range("Attribute new_control_mode is out of range");
   }
 
   if (ControlMode(new_control_mode) == ControlMode::UNSPECIFIED_CONTROL_MODE) {
@@ -92,8 +77,8 @@ ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_co
   activate_controllers_.clear();
   auto control_mode_controllers = control_mode_map_.at(ControlMode(new_control_mode));
   activate_controllers_.insert(control_mode_controllers.standard_controller);
-  if (!control_mode_controllers.impadence_cotroller.empty()) {
-    activate_controllers_.insert(control_mode_controllers.impadence_cotroller);
+  if (!control_mode_controllers.impedance_cotroller.empty()) {
+    activate_controllers_.insert(control_mode_controllers.impedance_cotroller);
   }
 
   activate_controllers_.merge(fixed_controllers_);
