@@ -88,15 +88,15 @@ ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_co
 
   // Goes through every controllers that should be activated
   for (auto activate_controllers_it = activate_controllers_.begin();
-    activate_controllers_it != activate_controllers_.end(); ++activate_controllers_it)
+    activate_controllers_it != activate_controllers_.end(); )
   {
     // Finds the controller in the deactivate controllers
     if (deactivate_controllers_.find(*activate_controllers_it) != deactivate_controllers_.end()) {
       // Delete those controllers wich not need to be activated or deactivated.
-      activate_controllers_.erase(activate_controllers_it);
-      deactivate_controllers_.erase(activate_controllers_it);
-      // Decrement iterators so it will not lose track;
-      --activate_controllers_it;
+      activate_controllers_it = activate_controllers_.erase(activate_controllers_it);
+      deactivate_controllers_.erase(*activate_controllers_it);
+    } else {
+      ++activate_controllers_it;
     }
   }
 
