@@ -40,7 +40,7 @@ public:
   /**
    * @brief Enum for identify every type of controllers
    */
-  typedef enum  // controller_type
+  enum ControllerType
   {
     JOINT_POSITION_CONTROLLER_TYPE = 0,
     CARTESIAN_POSITION_CONTROLLER_TYPE = 1,
@@ -48,12 +48,12 @@ public:
     CARTESIAN_IMPEDANCE_CONTROLLER_TYPE = 3,
     TORQUE_CONTROLLER_TYPE = 4,
     WRENCH_CONTROLLER_TYPE = 5
-  } ControllerType;
+  };
 
   /**
   * @brief Enum for identify every control mode
   */
-  typedef enum
+  enum ControlMode
   {
     UNSPECIFIED_CONTROL_MODE = 0,
     JOINT_POSITION_CONTROL_MODE = 1,
@@ -62,14 +62,14 @@ public:
     CARTESIAN_IMPEDANCE_CONTROL_MODE = 4,
     TORQUE_CONTROL_MODE = 5,
     WRENCH_CONTROL_MODE = 6
-  } ControlMode;
+  };
 
 private:
-  typedef struct
+  struct ControllerTypes
   {
     std::string standard_controller;
     std::string impedance_cotroller;
-  } ControllerTypes;
+  };
 
   /**
    * @brief Controller names thats have to active at any control mode
