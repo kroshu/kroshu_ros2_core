@@ -24,7 +24,7 @@ ControllerHandler::ControllerHandler(std::vector<std::string> fixed_controllers)
 {}
 
 bool ControllerHandler::UpdateControllerName(
-  const ControllerHandler::ControllerType controller_type,
+  const ControllerType controller_type,
   const std::string & controller_name)
 {
   switch (controller_type) {
@@ -64,7 +64,7 @@ bool ControllerHandler::UpdateControllerName(
 }
 
 std::pair<std::vector<std::string>, std::vector<std::string>>
-ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_control_mode)
+ControllerHandler::GetControllersForSwitch(ControlMode new_control_mode)
 {
   if (control_mode_map_.find(ControlMode(new_control_mode)) == control_mode_map_.end()) {
     // Not valid control mode, through error

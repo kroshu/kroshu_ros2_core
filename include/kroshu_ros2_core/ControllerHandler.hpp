@@ -22,6 +22,7 @@
 #include <set>
 
 #include "rclcpp/rclcpp.hpp"
+#include "ControlMode.hpp"
 
 namespace kroshu_ros2_core
 {
@@ -36,34 +37,6 @@ namespace kroshu_ros2_core
  */
 class ControllerHandler
 {
-public:
-  /**
-   * @brief Enum for identify every type of controllers
-   */
-  enum class ControllerType
-  {
-    JOINT_POSITION_CONTROLLER_TYPE = 0,
-    CARTESIAN_POSITION_CONTROLLER_TYPE = 1,
-    JOINT_IMPEDANCE_CONTROLLER_TYPE = 2,
-    CARTESIAN_IMPEDANCE_CONTROLLER_TYPE = 3,
-    TORQUE_CONTROLLER_TYPE = 4,
-    WRENCH_CONTROLLER_TYPE = 5
-  };
-
-  /**
-  * @brief Enum to identify every control mode
-  */
-  enum class ControlMode
-  {
-    UNSPECIFIED_CONTROL_MODE = 0,
-    JOINT_POSITION_CONTROL_MODE = 1,
-    CARTESIAN_POSITION_CONTROL_MODE = 2,
-    JOINT_IMPEDANCE_CONTROL_MODE = 3,
-    CARTESIAN_IMPEDANCE_CONTROL_MODE = 4,
-    TORQUE_CONTROL_MODE = 5,
-    WRENCH_CONTROL_MODE = 6
-  };
-
 private:
   struct ControllerTypes
   {
@@ -130,9 +103,8 @@ public:
    * Two vectors, first has the controllers to activate, second has the controllers to deactivate
    * @exception std::out_of_range: new_control_mode attribute is invalid
    */
-  std::pair<std::vector<std::string>,
-    std::vector<std::string>> GetControllersForSwitch(
-    ControllerHandler::ControlMode new_control_mode);
+  std::pair<std::vector<std::string>, std::vector<std::string>> GetControllersForSwitch(
+    ControlMode new_control_mode);
 
   /**
    * @brief Returns all controllers that has active state (used for driver deactivation)
