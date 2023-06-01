@@ -41,11 +41,11 @@ bool ControllerHandler::UpdateControllerName(
         controller_name;
       break;
     case ControllerType::JOINT_IMPEDANCE_CONTROLLER_TYPE:
-      control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL_MODE].impedance_cotroller =
+      control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL_MODE].impedance_controller =
         controller_name;
       break;
     case ControllerType::CARTESIAN_IMPEDANCE_CONTROLLER_TYPE:
-      control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE].impedance_cotroller =
+      control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE].impedance_controller =
         controller_name;
       break;
     case ControllerType::TORQUE_CONTROLLER_TYPE:
@@ -79,8 +79,8 @@ ControllerHandler::GetControllersForSwitch(ControllerHandler::ControlMode new_co
   activate_controllers_.clear();
   auto control_mode_controllers = control_mode_map_.at(ControlMode(new_control_mode));
   activate_controllers_.insert(control_mode_controllers.standard_controller);
-  if (!control_mode_controllers.impedance_cotroller.empty()) {
-    activate_controllers_.insert(control_mode_controllers.impedance_cotroller);
+  if (!control_mode_controllers.impedance_controller.empty()) {
+    activate_controllers_.insert(control_mode_controllers.impedance_controller);
   }
 
   activate_controllers_.insert(fixed_controllers_.begin(), fixed_controllers_.end());

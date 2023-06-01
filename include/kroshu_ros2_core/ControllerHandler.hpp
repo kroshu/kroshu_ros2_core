@@ -51,7 +51,7 @@ public:
   };
 
   /**
-  * @brief Enum for identify every control mode
+  * @brief Enum to identify every control mode
   */
   enum class ControlMode
   {
@@ -68,11 +68,11 @@ private:
   struct ControllerTypes
   {
     std::string standard_controller;
-    std::string impedance_cotroller;
+    std::string impedance_controller;
   };
 
   /**
-   * @brief Controller names thats have to active at any control mode
+   * @brief Controller names thats have to be active in all control modes
    */
   std::set<std::string> fixed_controllers_;
 
@@ -93,7 +93,7 @@ private:
   std::set<std::string> deactivate_controllers_;
 
   /**
-   * @brief Look up table for which controllers needed for each control mode
+   * @brief Look up table for which controllers are needed for each control mode
    */
   std::map<ControlMode, ControllerTypes> control_mode_map_;
 
@@ -101,7 +101,7 @@ public:
   /**
    * @brief Construct a new control mode handler object
    *
-   * @param fixed_controllers: Controllers thats have to active at any control mode
+   * @param fixed_controllers: Controllers that have to be active in all control modes
    */
   explicit ControllerHandler(std::vector<std::string> fixed_controllers);
 
@@ -111,11 +111,11 @@ public:
   ~ControllerHandler() = default;
 
   /**
-   * @brief Updates the controllers name for a specific controller type.
+   * @brief Updates the controllers' name for a specific controller type.
    *
-   * @param controller_type: The type of the cotroller wich will be updated.
-   * @param controller_name: The new controllers name. From now on this controller will be activated on controller acivation.
-   * @return True, if update was succesfull.
+   * @param controller_type: The type of the controller wich will be updated.
+   * @param controller_name: The new controller's name. From now on this controller will be activated on controller acivation.
+   * @return True, if update was successful.
    * @return False, if update failed.
    */
   bool UpdateControllerName(
@@ -128,27 +128,27 @@ public:
    * @param new_control_mode: The new control mode. It is based on Controller_handler::control_mode enum.
    * @return std::pair<std::vector<std::string>, std::vector<std::string>>:
    * Two vectors, first has the controllers to activate, second has the controllers to deactivate
-   * @exception std::out_of_range: No control mode for the actual new_control_mode atribute.
+   * @exception std::out_of_range: new_control_mode attribute is invalid
    */
   std::pair<std::vector<std::string>,
     std::vector<std::string>> GetControllersForSwitch(
     ControllerHandler::ControlMode new_control_mode);
 
   /**
-   * @brief Returns all controllers that has active state while deactivation
+   * @brief Returns all controllers that has active state (used for driver deactivation)
    *
-   * @return std::vector<std::string>: Vector that cotains controller for final deactivation
+   * @return std::vector<std::string>: Vector that contains controllers for deactivation
    */
   std::vector<std::string> GetControllersForDeactivation();
 
   /**
-   * @brief Approves that the controller activation was succesfull
+   * @brief Approves that the controller activation was successful
    *
    */
   void ApproveControllerActivation();
 
   /**
-   * @brief Approves that the controller deactivation was succesfull
+   * @brief Approves that the controller deactivation was successful
    *
    */
   void ApproveControllerDeactivation();
