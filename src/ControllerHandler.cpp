@@ -93,10 +93,12 @@ ControllerHandler::GetControllersForSwitch(ControlMode new_control_mode)
     activate_controllers_it != activate_controllers_.end(); )
   {
     // Finds the controller in the deactivate controllers
-    if (deactivate_controllers_.find(*activate_controllers_it) != deactivate_controllers_.end()) {
+    auto deactivate_controllers_it =
+      deactivate_controllers_.find(*activate_controllers_it);
+    if (deactivate_controllers_it != deactivate_controllers_.end()) {
       // Delete those controllers wich not need to be activated or deactivated.
       activate_controllers_it = activate_controllers_.erase(activate_controllers_it);
-      deactivate_controllers_.erase(*activate_controllers_it);
+      deactivate_controllers_.erase(deactivate_controllers_it);
     } else {
       ++activate_controllers_it;
     }
