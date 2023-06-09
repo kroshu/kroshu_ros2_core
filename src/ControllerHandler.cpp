@@ -130,6 +130,13 @@ void ControllerHandler::ApproveControllerActivation()
 void ControllerHandler::ApproveControllerDeactivation()
 {
   if (!deactivate_controllers_.empty()) {
+    for (auto && controller : deactivate_controllers_) {
+      if (active_controllers_.find(controller) == active_controllers_.end()) {
+        // Not valid controller
+        throw std::out_of_range("Controller to deactivate is out of range");
+      }
+    }
+
     active_controllers_.erase(deactivate_controllers_.begin(), deactivate_controllers_.end());
     deactivate_controllers_.clear();
   }
