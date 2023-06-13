@@ -93,10 +93,12 @@ ControllerHandler::GetControllersForSwitch(ControlMode new_control_mode)
     activate_controllers_it != activate_controllers_.end(); )
   {
     // Finds the controller in the deactivate controllers
-    if (deactivate_controllers_.find(*activate_controllers_it) != deactivate_controllers_.end()) {
+    auto deactivate_controllers_it =
+      deactivate_controllers_.find(*activate_controllers_it);
+    if (deactivate_controllers_it != deactivate_controllers_.end()) {
       // Delete those controllers wich not need to be activated or deactivated.
       activate_controllers_it = activate_controllers_.erase(activate_controllers_it);
-      deactivate_controllers_.erase(*activate_controllers_it);
+      deactivate_controllers_.erase(deactivate_controllers_it);
     } else {
       ++activate_controllers_it;
     }
@@ -125,11 +127,18 @@ void ControllerHandler::ApproveControllerActivation()
   }
 }
 
-void ControllerHandler::ApproveControllerDeactivation()
+bool ControllerHandler::ApproveControllerDeactivation()
 {
-  if (!deactivate_controllers_.empty()) {
-    active_controllers_.erase(deactivate_controllers_.begin(), deactivate_controllers_.end());
-    deactivate_controllers_.clear();
+  for (auto && controller : deactivate_controllers_) {
+    auto active_controller_it = active_controllers_.find(controller);
+    if (active_controller_it == active_controllers_.end()) {
+      // We should not reach this, active controllers should always contain the ones to deactivate
+      return false;
+    }
+    active_controllers_.erase(active_controller_it);
   }
+  deactivate_controllers_.clear();
+
+  return true;
 }
 }   // namespace kroshu_ros2_core
