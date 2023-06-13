@@ -29,31 +29,31 @@ bool ControllerHandler::UpdateControllerName(
 {
   switch (controller_type) {
     case ControllerType::JOINT_POSITION_CONTROLLER_TYPE:
-      control_mode_map_[ControlMode::JOINT_POSITION_CONTROL_MODE].standard_controller =
+      control_mode_map_[ControlMode::JOINT_POSITION_CONTROL].standard_controller =
         controller_name;
-      control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL_MODE].standard_controller =
+      control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL].standard_controller =
         controller_name;
       break;
     case ControllerType::CARTESIAN_POSITION_CONTROLLER_TYPE:
-      control_mode_map_[ControlMode::CARTESIAN_POSITION_CONTROL_MODE].standard_controller =
+      control_mode_map_[ControlMode::CARTESIAN_POSITION_CONTROL].standard_controller =
         controller_name;
-      control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE].standard_controller =
+      control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL].standard_controller =
         controller_name;
       break;
     case ControllerType::JOINT_IMPEDANCE_CONTROLLER_TYPE:
-      control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL_MODE].impedance_controller =
+      control_mode_map_[ControlMode::JOINT_IMPEDANCE_CONTROL].impedance_controller =
         controller_name;
       break;
     case ControllerType::CARTESIAN_IMPEDANCE_CONTROLLER_TYPE:
-      control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL_MODE].impedance_controller =
+      control_mode_map_[ControlMode::CARTESIAN_IMPEDANCE_CONTROL].impedance_controller =
         controller_name;
       break;
     case ControllerType::TORQUE_CONTROLLER_TYPE:
-      control_mode_map_[ControlMode::TORQUE_CONTROL_MODE].standard_controller =
+      control_mode_map_[ControlMode::JOINT_TORQUE_CONTROL].standard_controller =
         controller_name;
       break;
     case ControllerType::WRENCH_CONTROLLER_TYPE:
-      control_mode_map_[ControlMode::WRENCH_CONTROL_MODE].standard_controller =
+      control_mode_map_[ControlMode::WRENCH_CONTROL].standard_controller =
         controller_name;
       break;
     default:
