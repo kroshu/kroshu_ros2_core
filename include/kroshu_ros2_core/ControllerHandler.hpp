@@ -123,7 +123,7 @@ public:
    * @brief Approves that the controller deactivation was successful
    *
    */
-  void ApproveControllerDeactivation();
+  bool ApproveControllerDeactivation();
 };
 }  // namespace kroshu_ros2_core
 

@@ -127,18 +127,18 @@ void ControllerHandler::ApproveControllerActivation()
   }
 }
 
-void ControllerHandler::ApproveControllerDeactivation()
+bool ControllerHandler::ApproveControllerDeactivation()
 {
-  if (!deactivate_controllers_.empty()) {
-    for (auto && controller : deactivate_controllers_) {
-      if (active_controllers_.find(controller) == active_controllers_.end()) {
-        // Not valid controller
-        throw std::out_of_range("Controller to deactivate is out of range");
-      }
+  for (auto && controller : deactivate_controllers_) {
+    auto active_controller_it = active_controllers_.find(controller);
+    if (active_controller_it == active_controllers_.end()) {
+      // We should not reach this, active controllers should always contain the ones to deactivate
+      return false;
     }
-
-    active_controllers_.erase(deactivate_controllers_.begin(), deactivate_controllers_.end());
-    deactivate_controllers_.clear();
+    active_controllers_.erase(active_controller_it);
   }
+  deactivate_controllers_.clear();
+
+  return true;
 }
 }   // namespace kroshu_ros2_core
