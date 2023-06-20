@@ -66,18 +66,18 @@ bool ControllerHandler::UpdateControllerName(
 std::pair<std::vector<std::string>, std::vector<std::string>>
 ControllerHandler::GetControllersForSwitch(ControlMode new_control_mode)
 {
-  if (control_mode_map_.find(ControlMode(new_control_mode)) == control_mode_map_.end()) {
+  if (control_mode_map_.find(new_control_mode) == control_mode_map_.end()) {
     // Not valid control mode, through error
     throw std::out_of_range("Attribute new_control_mode is out of range");
   }
 
-  if (ControlMode(new_control_mode) == ControlMode::UNSPECIFIED_CONTROL_MODE) {
+  if (new_control_mode == ControlMode::UNSPECIFIED_CONTROL_MODE) {
     throw std::logic_error("UNSPECIFIED_CONTROL_MODE is not valid control mode");
   }
 
   // Set controllers wich should be activated and deactivated
   activate_controllers_.clear();
-  auto control_mode_controllers = control_mode_map_.at(ControlMode(new_control_mode));
+  auto control_mode_controllers = control_mode_map_.at(new_control_mode);
   activate_controllers_.insert(control_mode_controllers.standard_controller);
   if (!control_mode_controllers.impedance_controller.empty()) {
     activate_controllers_.insert(control_mode_controllers.impedance_controller);
