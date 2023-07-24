@@ -36,7 +36,7 @@ jobs:
           ANALYZER: sonarqube
           TEST_COVERAGE: true
           CMAKE_ARGS: '-DMOCK_FRI=ON'
-          ROS_DISTRO: foxy
+          ROS_DISTRO: humble
     env:
       CCACHE_DIR: /github/home/.ccache # Directory for ccache (and how we enable ccache in industrial_ci)
       EVENT_NAME: ${{ github.event_name }}
