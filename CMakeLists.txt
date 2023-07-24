@@ -19,6 +19,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
+find_package(controller_manager REQUIRED)
 
 add_library(kroshu_ros2_core SHARED
   src/ROS2BaseNode.cpp
@@ -27,6 +28,10 @@ add_library(kroshu_ros2_core SHARED
   src/ControllerHandler.cpp
 )
 ament_target_dependencies(kroshu_ros2_core rclcpp rclcpp_lifecycle lifecycle_msgs)
+
+add_executable(control_node
+  src/control_node.cpp)
+ament_target_dependencies(control_node rclcpp rclcpp_lifecycle controller_manager)
 
 ament_export_targets(export_kroshu_ros2_core HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp rclcpp_lifecycle lifecycle_msgs)
@@ -59,6 +64,9 @@ install(
   LIBRARY DESTINATION lib
   INCLUDES DESTINATION include
 )
+
+install(TARGETS ${PROJECT_NAME} control_node
+  DESTINATION lib/${PROJECT_NAME})
 
 ament_export_include_directories(include)
 
