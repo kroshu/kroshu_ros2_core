@@ -61,6 +61,7 @@ int main(int argc, char ** argv)
             controller_manager->update(controller_manager->now(), dt);
             controller_manager->write(controller_manager->now(), dt);
           } else {
+            controller_manager->update(controller_manager->now(), dt);
             std::this_thread::sleep_for(dt_ms);
           }
         }
